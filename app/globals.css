@@ -1,13 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --border-input: hsl(0 0% 89.8%);
-  --primary
-}
-
-/* Utility class for border-input color */
-.border-input {
-  border-color: var(--border-input) !important;
+  --primary: rgb(37 99 235);
+  --btn: rgb(4 117 239);
+  --muted: hsl(215.4 16.3% 46.9%);
+  --secondary: #e2e8f0;
+  --muted: hsl(0 0% 45.1%);
+  --input: hsl(0 0% 89.8%);
+  --card: hsl(0 0% 100%);
+  --darkBlue: rgb(15 23 42);
+  --dark: rgb(148 163 184);
 }
 
 @layer utilities {
@@ -113,8 +115,4 @@
   width: 14px;
   height: 14px;
   animation: spin 1s linear infinite;
-}
-
-.border-input {
-  border-color: var(--border-input);
 }
