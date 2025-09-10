@@ -105,39 +105,7 @@ export default function DashboardPage() {
       </header>
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200">
-            <div className="px-4 py-5 sm:px-6">
-              <h2 className="text-lg font-medium text-gray-900">Welcome to your dashboard</h2>
-              <p className="mt-1 text-sm text-gray-500">
-                Your account was created on {new Date(user?.createdAt).toLocaleDateString()}.
-              </p>
-            </div>
-            <div className="px-4 py-5 sm:p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">What's next?</h3>
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                <div className="bg-white overflow-hidden shadow rounded-lg">
-                  <div className="px-4 py-5 sm:p-6">
-                    <h4 className="text-base font-medium text-gray-900">Complete your profile</h4>
-                    <p className="mt-1 text-sm text-gray-500">Add more details to personalize your experience.</p>
-                  </div>
-                </div>
-                <div className="bg-white overflow-hidden shadow rounded-lg">
-                  <div className="px-4 py-5 sm:p-6">
-                    <h4 className="text-base font-medium text-gray-900">Explore templates</h4>
-                    <p className="mt-1 text-sm text-gray-500">Browse our collection of portfolio templates.</p>
-                  </div>
-                </div>
-                <div className="bg-white overflow-hidden shadow rounded-lg">
-                  <div className="px-4 py-5 sm:p-6">
-                    <h4 className="text-base font-medium text-gray-900">Upload your resume</h4>
-                    <p className="mt-1 text-sm text-gray-500">Import your skills and experience from a PDF.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+       
       </main>
     </div>
   );

@@ -9,6 +9,7 @@ export default function SignupForm() {
   const [username, setUsername] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
   const router = useRouter();
 
   async function handleSubmit(event) {
@@ -32,10 +33,16 @@ export default function SignupForm() {
       });
 
       if (!response.ok) {
-        const { error } = await response.json().catch(() => ({error: "Failed to create account. Please try again."}));
+        const { error } = await response
+          .json()
+          .catch(() => ({
+            error: "Failed to create account. Please try again.",
+          }));
         setError(error || "Failed to create account. Please try again.");
         return;
       }
+
+      setShowNotification(true);
 
     } catch (error) {
       setError("Something went wrong. Please try again.");
@@ -46,12 +53,25 @@ export default function SignupForm() {
 
   return (
     <div className="h-screen flex items-center">
+
+      {showNotification && (
+        <Notification
+          id="magic-link-sent"
+          message="Magic link sent to your email!"
+          duration={3000}
+        />
+      )}
+
       <form
         onSubmit={handleSubmit}
         className="flex flex-col gap-2 sm:max-w-sm w-full items-center mx-auto px-4"
       >
-        <h1 className="text-2xl font-semibold tracking-tight">Create Account</h1>
-        <p className="text-sm text-muted mb-3">Enter your details to get started</p>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Create Account
+        </h1>
+        <p className="text-sm text-muted mb-3">
+          Enter your details to get started
+        </p>
 
         <input
           type="email"

@@ -1,7 +1,8 @@
 import prisma from "@/lib/db";
 import { validateEmail, validateUsername } from "@/lib/validators";
 import { cookies } from "next/headers";
-import { createSessionCookie } from "@/lib/session";
+import crypto from "crypto";
+import { SendMagicLinkEmail } from "@/lib/email";
 
 export async function POST(req) {
   try {
@@ -69,24 +70,33 @@ export async function POST(req) {
       }
     });
 
-    // Set session cookie
-    const cookie = createSessionCookie(user.id);
-    const cookieStore = await cookies();
-    cookieStore.set(cookie.name, cookie.value, cookie.options);
+  
+    // Generate secure token
+    const token = crypto.randomBytes(32).toString("hex");
+    
+    // Set expiration (15 minutes from now)
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+    
+    // Save token to database with user ID
+    await prisma.verificationToken.create({
+      data: {
+        token,
+        userId: user.id,
+        expiresAt,
+      },
+    });
 
-    // Send magic link or verification email
-    console.log("TODO: send verification email to:", email);
+    // Build magic link
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const magicLink = `${baseUrl}/api/auth/verify?token=${token}`;
+    
+    // Send magic link email
+    await SendMagicLinkEmail(email, magicLink);
 
-    return new Response(
-      JSON.stringify({ 
-        success: true, 
-        message: "Account created successfully. Check your email for verification." 
-      }),
-      {
-        status: 201,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    return new Response(JSON.stringify({ success: true }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
     console.error("Signup error:", error);
     return new Response(
