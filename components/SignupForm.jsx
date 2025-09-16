@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { validateEmail, validateUsername } from "@/lib/validators";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function SignupForm() {
   const [email, setEmail] = useState("");
@@ -33,17 +34,14 @@ export default function SignupForm() {
       });
 
       if (!response.ok) {
-        const { error } = await response
-          .json()
-          .catch(() => ({
-            error: "Failed to create account. Please try again.",
-          }));
+        const { error } = await response.json().catch(() => ({
+          error: "Failed to create account. Please try again.",
+        }));
         setError(error || "Failed to create account. Please try again.");
         return;
       }
 
       setShowNotification(true);
-
     } catch (error) {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -53,7 +51,6 @@ export default function SignupForm() {
 
   return (
     <div className="h-screen flex items-center">
-
       {showNotification && (
         <Notification
           id="magic-link-sent"
@@ -66,6 +63,14 @@ export default function SignupForm() {
         onSubmit={handleSubmit}
         className="flex flex-col gap-2 sm:max-w-sm w-full items-center mx-auto px-4"
       >
+        <Image
+          src="/logo.svg"
+          alt="Logo"
+          width={48}
+          height={48}
+          className="mb-4"
+        />
+
         <h1 className="text-2xl font-semibold tracking-tight">
           Create Account
         </h1>

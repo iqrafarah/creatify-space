@@ -7,6 +7,17 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  username  String   @unique
+  createdAt DateTime @default(now())
+  
+  // Add this relation
+  tokens    VerificationToken[]
+}
+
+
 model VerificationToken {
   id        String   @id @default(cuid())
   token     String   @unique
@@ -16,14 +27,4 @@ model VerificationToken {
   createdAt DateTime @default(now())
 
   @@index([token])
-}
-
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  username  String   @unique
-  createdAt DateTime @default(now())
-  
-  // Add this relation
-  tokens    VerificationToken[]
 }

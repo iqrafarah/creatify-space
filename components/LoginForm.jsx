@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { validateEmail } from "@/lib/validators";
 import Link from "next/link";
 import Notification from "./Notification";
+import Image from "next/image";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -47,6 +48,8 @@ export default function LoginForm() {
     }
   }
 
+  const isButtonDisabled = isSubmitting || !email.trim();
+
   return (
     <div className="h-screen flex items-center">
 
@@ -62,7 +65,9 @@ export default function LoginForm() {
         onSubmit={handleSubmit}
         className="flex flex-col gap-2 sm:max-w-sm w-full items-center  mx-auto px-4"
       >
-        <h1 className="text-2xl font-semibold tracking-tight">Login</h1>
+        <Image src="/logo.svg" alt="Logo" width={48} height={48} className="mb-4"/>
+
+        <h1 className="text-2xl font-semibold tracking-tight">Welcome Back</h1>
         <p className="text-sm text-muted mb-3">
           Enter your email to receive a magic link
         </p>
@@ -84,10 +89,10 @@ export default function LoginForm() {
         )}
 
         <button
-          disabled={isSubmitting}
+          disabled={isButtonDisabled}
           type="submit"
           aria-invalid={error ? "true" : "false"}
-          className="w-full bg-[var(--primary)] hover:bg-[var(--btn)] text-white font-medium text-sm capitalize h-10 px-6 py-2 rounded-md flex gap-2 justify-center items-center"
+          className={`w-full bg-[var(--primary)] hover:bg-[var(--btn)] text-white font-medium text-sm capitalize h-10 px-6 py-2 rounded-md flex gap-2 justify-center items-center ${isButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           {isSubmitting ? (
             <>
