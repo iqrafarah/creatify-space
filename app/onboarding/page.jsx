@@ -30,31 +30,59 @@ export default function OnboardingPage() {
     fileInputRef.current?.click();
   }
 
-  async function handleUpload() {
-    if (!file) {
-      setFileError('Please select a LinkedIn PDF export file');
-      return;
-    }
-    setIsUploading(true);
+async function handleUpload() {
+  if (!file) {
+    setFileError('Please select a LinkedIn PDF export file');
+    return;
+  }
+
+  setIsUploading(true);
+  setFileError('');
+
+  try {
+    // Step 1: Upload PDF to /api/profile/linkedin-upload
     const formData = new FormData();
     formData.append('linkedinPdf', file);
-    try {
-      const response = await fetch('/api/profile/linkedin-parse', {
-        method: 'POST',
-        body: formData,
-      });
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to parse LinkedIn PDF');
-      }
-      // Redirect to dashboard after upload
-      router.push('/dashboard');
-    } catch (error) {
-      setFileError(error.message || 'Something went wrong. Please try again.');
-    } finally {
-      setIsUploading(false);
+
+    const uploadRes = await fetch('/api/profile/linkedin-upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!uploadRes.ok) {
+      const error = await uploadRes.json();
+      throw new Error(error.message || 'Failed to process LinkedIn PDF');
     }
+
+    const { text } = await uploadRes.json();
+
+    if (!text || typeof text !== 'string') {
+      throw new Error('No text extracted from PDF');
+    }
+
+    // Step 2: Send parsed text to /api/profile/linkedin-parse
+    const parseRes = await fetch('/api/profile/linkedin-parse', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text }),
+    });
+
+    if (!parseRes.ok) {
+      const error = await parseRes.json();
+      throw new Error(error.message || 'Failed to parse LinkedIn data');
+    }
+
+    // ✅ Success — redirect to dashboard
+    router.push('/dashboard');
+
+  } catch (error) {
+    setFileError(error.message || 'Something went wrong. Please try again.');
+  } finally {
+    setIsUploading(false);
   }
+}
 
   return (
     <div className="py-6 min-h-screen flex flex-col items-center overflow-auto">
