@@ -70,29 +70,6 @@ export async function POST(req) {
       }
     });
 
-  
-    // Generate secure token
-    const token = crypto.randomBytes(32).toString("hex");
-    
-    // Set expiration (15 minutes from now)
-    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
-    
-    // Save token to database with user ID
-    await prisma.verificationToken.create({
-      data: {
-        token,
-        userId: user.id,
-        expiresAt,
-      },
-    });
-
-    // Build magic link
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-    const magicLink = `${baseUrl}/api/auth/verify?token=${token}`;
-    
-    // Send magic link email
-    await SendMagicLinkEmail(email, magicLink);
-
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: { "Content-Type": "application/json" },

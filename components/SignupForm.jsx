@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { validateEmail, validateUsername } from "@/lib/validators";
 import Link from "next/link";
 import Image from "next/image";
+import Toast from "./Toast";
 
 export default function SignupForm() {
   const [email, setEmail] = useState("");
@@ -42,6 +43,10 @@ export default function SignupForm() {
       }
 
       setShowNotification(true);
+
+      setTimeout(() => {
+        router.push("/login");
+      }, 3000);
     } catch (error) {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -52,9 +57,9 @@ export default function SignupForm() {
   return (
     <div className="h-screen flex items-center">
       {showNotification && (
-        <Notification
+        <Toast
           id="magic-link-sent"
-          message="Magic link sent to your email!"
+          message="Account created! login to continue."
           duration={3000}
         />
       )}

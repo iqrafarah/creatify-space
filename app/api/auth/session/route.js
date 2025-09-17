@@ -5,7 +5,7 @@ import { verifySessionCookie } from "@/lib/session";
 export async function GET() {
   try {
     // Use the verifySessionCookie function to get userId from cookie
-    const userId = verifySessionCookie();
+    const userId = await verifySessionCookie();
     
     if (!userId) {
       return new Response(JSON.stringify({ 

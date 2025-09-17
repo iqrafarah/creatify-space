@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { validateEmail } from "@/lib/validators";
 import Link from "next/link";
-import Notification from "./Notification";
+import Toast from "./Toast";
 import Image from "next/image";
 
 export default function LoginForm() {
@@ -54,7 +54,7 @@ export default function LoginForm() {
     <div className="h-screen flex items-center">
 
       {showNotification && (
-        <Notification 
+        <Toast 
           id="magic-link-sent" 
           message="Magic link sent to your email!" 
           duration={3000} 

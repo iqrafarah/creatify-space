@@ -16,15 +16,7 @@ export async function GET() {
     
     // Check if user has a profile
     const profile = await prisma.profile.findUnique({
-      where: { userId },
-      include: {
-        user: {
-          select: {
-            username: true,
-            email: true
-          }
-        }
-      }
+      where: { userId }
     });
     
     // Get user's experiences (if any)
@@ -39,6 +31,15 @@ export async function GET() {
       orderBy: { order: 'asc' }
     });
     
+    // Get user info
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        username: true,
+        email: true
+      }
+    });
+    
     if (!profile) {
       return NextResponse.json({ 
         hasProfile: false,
@@ -51,6 +52,7 @@ export async function GET() {
       hasProfile: true,
       profile: {
         ...profile,
+        user,
         experiences,
         skills: skills.map(skill => skill.name),
         createdAt: profile.createdAt.toISOString(),

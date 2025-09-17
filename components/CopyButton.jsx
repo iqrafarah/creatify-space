@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Notification from "@/components/Notification";
+import Toast from "@/components/Toast";
 
 const CopyButton = ({ textToCopy }) => {
   const [notifications, setNotifications] = useState([]);
@@ -52,7 +52,7 @@ const CopyButton = ({ textToCopy }) => {
       </div>
 
       {notifications.map((notification) => (
-        <Notification
+        <Toast
           key={notification.key}
           message={notification.message}
           duration={3000}

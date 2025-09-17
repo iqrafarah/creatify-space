@@ -8,7 +8,10 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const token = searchParams.get("token");
     
+    console.log("Verifying token:", token);
+    
     if (!token) {
+      console.log("No token provided");
       return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/login?error=invalid-token`);
     }
     
@@ -18,6 +21,9 @@ export async function GET(request) {
       include: { user: true },
     });
     
+    console.log("Token found:", !!verificationToken);
+    
+    // Rest of your code...
     // Check if token exists and is valid
     if (!verificationToken) {
       return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/login?error=invalid-token`);
