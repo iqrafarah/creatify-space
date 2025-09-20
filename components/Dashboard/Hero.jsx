@@ -28,7 +28,7 @@ export default function Hero({ heroDataChange, profile }) {
           heroData = {
             name: profile.name || "",
             position: profile.headline || "",
-            description: profile.summary || "",
+            description: profile.shortDescription || "",
             image: profile.imageUrl || "/logo.svg",
           };
         } else {
@@ -41,8 +41,8 @@ export default function Hero({ heroDataChange, profile }) {
             heroData = {
               name: p.name || "",
               position: p.headline || "",
-              description: p.summary || "",
-              image: p.imageUrl || "/placeholder-profile.png",
+              description: p.shortDescription || "",
+              image: p.imageUrl || "/logo.svg",
             };
           } else {
             heroData = {
@@ -120,7 +120,7 @@ export default function Hero({ heroDataChange, profile }) {
     const requestBody = {
       name: formData.name,
       headline: formData.position, // <-- API expects 'headline'
-      summary: formData.description, // <-- API expects 'summary'
+      shortDescription: formData.description, // <-- API expects 'shortDescription'
       imageUrl: profileImage, // <-- API expects 'imageUrl'
     };
 

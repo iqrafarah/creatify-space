@@ -76,14 +76,14 @@ export async function PUT(request) {
     const body = await request.json();
 
     // Only allow updating certain fields
-    const { name, headline, summary, imageUrl } = body;
+    const { name, headline, shortDescription, imageUrl } = body;
 
     const updatedProfile = await prisma.profile.update({
       where: { userId },
       data: {
         name,
         headline,
-        summary,
+        shortDescription,
         imageUrl,
         updatedAt: new Date(),
       },

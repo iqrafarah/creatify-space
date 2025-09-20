@@ -38,6 +38,7 @@
     available Boolean  @default(false)
     name      String?
     headline  String?
+    shortDescription String?
     summary   String?  @db.Text
     imageUrl  String?
     createdAt DateTime @default(now())

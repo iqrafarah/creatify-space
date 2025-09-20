@@ -97,6 +97,7 @@ export async function POST(req) {
       update: {
         name: linkedInData.profile.name || "",
         headline: linkedInData.profile.headline || "",
+        shortDescription:  "lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad", // Map about to shortDescription field
         summary: linkedInData.profile.about || "", // Map about to summary field
         available: linkedInData.profile.available,
         updatedAt: new Date()
@@ -105,6 +106,7 @@ export async function POST(req) {
         userId,
         name: linkedInData.profile.name || "",
         headline: linkedInData.profile.headline || "",
+        shortDescription:  "lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad", // Map about to shortDescription field
         summary: linkedInData.profile.about || "", // Map about to summary field
         available: linkedInData.profile.available,
       }

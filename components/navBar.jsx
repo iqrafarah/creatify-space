@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import useAuth from "@/hooks/useAuth";
 import CopyButton from "@/components/CopyButton";
 import PublishButton from "@/components/PublishButton";
-import {fetchProfile} from "@/lib/fetchProfile";
+import { fetchProfile } from "@/lib/fetchProfile";
 
 export default function NavBar({ hideContainer }) {
   const { isAuthorized } = useAuth();
@@ -18,11 +18,9 @@ export default function NavBar({ hideContainer }) {
   const pathname = usePathname();
 
   // paths where navbar should be hidden
-  const hiddenPaths = ["/login", "/signup"];
+  const hiddenPaths = ["/login", "/signup", "/onboarding"];
   const shouldHide =
     hiddenPaths.includes(pathname) || pathname.includes("[username]");
-
-  if (shouldHide) return null;
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -51,7 +49,7 @@ export default function NavBar({ hideContainer }) {
     setOpenProfile((prev) => !prev);
   };
 
-  if (!isAuthorized) {
+  if (shouldHide || !isAuthorized) {
     return null;
   }
 
@@ -62,7 +60,7 @@ export default function NavBar({ hideContainer }) {
           hideContainer
             ? "w-full"
             : "border-b border-[#e7e5e4]  bg-[var(--lightGray)]"
-        } relative`}
+        } relative py-2`}
       >
         <div className="flex flex-row items-center justify-between">
           <div className="w-1/4 mx-2  pl-4">
@@ -78,9 +76,9 @@ export default function NavBar({ hideContainer }) {
             </Link>
           </div>
           {!profile ? (
-            <div>
+            <div className="pr-4">
               <Link href="/auth">
-                <button className="bg-inherit px-4 py-2 rounded-md border-2 border-[#e7e7e7] hover:bg-[#f5f5f5] text-sm">
+                <button className="bg-inherit px-4 py-2 rounded-md border-2 border-[#e7e7e7] hover:bg-[#f5f5f5] text-sm pr-4">
                   Sign in / sign up
                 </button>
               </Link>
