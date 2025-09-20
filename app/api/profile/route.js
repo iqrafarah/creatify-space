@@ -4,34 +4,29 @@ import { verifySessionCookie } from "@/lib/session";
 
 export async function GET() {
   try {
-    // Verify the user is authenticated
     const userId = await verifySessionCookie();
-    
+
     if (!userId) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
       );
     }
-    
-    // Check if user has a profile
+
     const profile = await prisma.profile.findUnique({
       where: { userId }
     });
-    
-    // Get user's experiences (if any)
+
     const experiences = await prisma.experience.findMany({
       where: { userId },
       orderBy: { order: 'asc' }
     });
-    
-    // Get user's skills (if any)
+
     const skills = await prisma.skill.findMany({
       where: { userId },
       orderBy: { order: 'asc' }
     });
-    
-    // Get user info
+
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -39,15 +34,14 @@ export async function GET() {
         email: true
       }
     });
-    
+
     if (!profile) {
       return NextResponse.json({ 
         hasProfile: false,
         message: "Profile not found" 
       });
     }
-    
-    // Return the profile data
+
     return NextResponse.json({
       hasProfile: true,
       profile: {
@@ -63,6 +57,50 @@ export async function GET() {
     console.error("Profile fetch error:", error);
     return NextResponse.json(
       { error: "Failed to fetch profile" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(request) {
+  try {
+    const userId = await verifySessionCookie();
+
+    if (!userId) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
+
+    // Only allow updating certain fields
+    const { name, headline, summary, imageUrl } = body;
+
+    const updatedProfile = await prisma.profile.update({
+      where: { userId },
+      data: {
+        name,
+        headline,
+        summary,
+        imageUrl,
+        updatedAt: new Date(),
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      profile: {
+        ...updatedProfile,
+        createdAt: updatedProfile.createdAt.toISOString(),
+        updatedAt: updatedProfile.updatedAt.toISOString()
+      }
+    });
+  } catch (error) {
+    console.error("Profile update error:", error);
+    return NextResponse.json(
+      { error: "Failed to update profile" },
       { status: 500 }
     );
   }

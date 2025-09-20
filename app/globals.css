@@ -10,6 +10,7 @@
   --card: hsl(0 0% 100%);
   --darkBlue: rgb(15 23 42);
   --dark: rgb(148 163 184);
+  --lightGray: #f9f9f9;
 }
 
 @layer utilities {

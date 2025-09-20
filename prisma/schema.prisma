@@ -1,72 +1,72 @@
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
+  datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+  }
 
-generator client {
-  provider = "prisma-client-js"
-}
+  generator client {
+    provider = "prisma-client-js"
+  }
 
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  username  String   @unique
-  createdAt DateTime @default(now())
+  model User {
+    id        String   @id @default(cuid())
+    email     String   @unique
+    username  String   @unique
+    createdAt DateTime @default(now())
 
-  // Relations
-  tokens      VerificationToken[]
-  profile     Profile?
-  experiences Experience[]
-  skills      Skill[]
-}
+    // Relations
+    tokens      VerificationToken[]
+    profile     Profile?
+    experiences Experience[]
+    skills      Skill[]
+  }
 
-model VerificationToken {
-  id        String   @id @default(cuid())
-  token     String   @unique
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  expiresAt DateTime
-  createdAt DateTime @default(now())
+  model VerificationToken {
+    id        String   @id @default(cuid())
+    token     String   @unique
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    expiresAt DateTime
+    createdAt DateTime @default(now())
 
-  @@index([token])
-}
+    @@index([token])
+  }
 
-model Profile {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  available Boolean  @default(false)
-  name      String?
-  headline  String?
-  summary   String?  @db.Text
-  imageUrl  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
+  model Profile {
+    id        String   @id @default(cuid())
+    userId    String   @unique
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    available Boolean  @default(false)
+    name      String?
+    headline  String?
+    summary   String?  @db.Text
+    imageUrl  String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+  }
 
-model Experience {
-  id        String   @id @default(cuid())
-  userId    String
-  company   String
-  title     String
-  duration  String
-  order     Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  model Experience {
+    id        String   @id @default(cuid())
+    userId    String
+    company   String
+    title     String
+    duration  String
+    order     Int
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId])
-}
+    @@index([userId])
+  }
 
-model Skill {
-  id        String   @id @default(cuid())
-  userId    String
-  name      String
-  order     Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  model Skill {
+    id        String   @id @default(cuid())
+    userId    String
+    name      String
+    order     Int
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, name])
-  @@index([userId])
-}
+    @@unique([userId, name])
+    @@index([userId])
+  }

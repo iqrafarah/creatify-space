@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const PublishButton = ({
   username,
@@ -20,36 +20,36 @@ const PublishButton = ({
     }
   }, [username]);
 
-  useEffect(() => {
-    async function fetchPublishStatus() {
-      try {
-        const response = await fetch(
-          `/api/togglePublish?username=${encodeURIComponent(username)}`,
-          {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-          }
-        );
+  // useEffect(() => {
+  //   async function fetchPublishStatus() {
+  //     try {
+  //       const response = await fetch(
+  //         `/api/togglePublish?username=${encodeURIComponent(username)}`,
+  //         {
+  //           method: "GET",
+  //           headers: { "Content-Type": "application/json" },
+  //         }
+  //       );
 
-        if (response.ok) {
-          const data = await response.json();
-          setIsPublished(data.isPublished);
-          if (typeof window !== "undefined") {
-            localStorage.setItem(
-              `publishState_${username}`,
-              JSON.stringify(data.isPublished)
-            );
-          }
-        } else {
-          console.error("Failed to fetch publish status");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    }
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         setIsPublished(data.isPublished);
+  //         if (typeof window !== "undefined") {
+  //           localStorage.setItem(
+  //             `publishState_${username}`,
+  //             JSON.stringify(data.isPublished)
+  //           );
+  //         }
+  //       } else {
+  //         console.error("Failed to fetch publish status");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error:", error);
+  //     }
+  //   }
 
-    fetchPublishStatus();
-  }, [username]);
+  //   fetchPublishStatus();
+  // }, [username]);
 
   const handleClick = async () => {
     try {
@@ -97,18 +97,16 @@ const PublishButton = ({
     <div className="">
       <button
         type="button"
-        className={`w-full font-medium text-[15px] px-4 py-2 rounded-md border ${
+        className={`w-full font-medium text-sm px-4 py-2 rounded-md border ${
           isPublished
             ? "bg-white text-black shadow-sm border border-[#e7e5e4] hover:bg-[#f5f5f5]"
-            : "bg-primary text-white border-[#e7e5e4] hover:bg-btn"
+            : "bg-[var(--primary)] text-white border-[#e7e5e4] hover:bg-btn"
         }`}
         onClick={handleClick}
       >
-        {isPublished ? "Unpublish page" : "Publish page"}
+        {isPublished ? "Unpublish" : "Publish"}
       </button>
-      <p className="text-muted text-sm my-2 text-center">
-        {isPublished ? "" : "Your page isn't visible to the public."}
-      </p>
+      
     </div>
   );
 };

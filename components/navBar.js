@@ -1,0 +1,129 @@
+"use client";
+import React, { useState, useEffect } from "react";
+import ProfileMenu from "./ProfileMenu";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import useAuth from "@/hooks/useAuth";
+import CopyButton from "@/components/CopyButton";
+import PublishButton from "@/components/PublishButton";
+import {fetchProfile} from "@/lib/fetchProfile";
+
+export default function NavBar({ hideContainer }) {
+  const { isAuthorized } = useAuth();
+  const [openProfile, setOpenProfile] = useState(false);
+  const [profile, setProfile] = useState(null);
+  const [isPublished, setIsPublished] = useState(false);
+
+  const pathname = usePathname();
+
+  // paths where navbar should be hidden
+  const hiddenPaths = ["/login", "/signup"];
+  const shouldHide =
+    hiddenPaths.includes(pathname) || pathname.includes("[username]");
+
+  if (shouldHide) return null;
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (isAuthorized) {
+        const data = await fetchProfile();
+        if (data.hasProfile) {
+          setProfile(data.profile);
+          setIsPublished(data.profile.isPublished || false);
+        } else {
+          setProfile(null);
+          setIsPublished(false);
+        }
+      } else {
+        setProfile(null);
+        setIsPublished(false);
+      }
+    };
+    loadProfile();
+  }, [isAuthorized]);
+
+  const handlePublishToggle = (newPublishState) => {
+    setIsPublished(newPublishState);
+  };
+
+  const handleProfileToggle = () => {
+    setOpenProfile((prev) => !prev);
+  };
+
+  if (!isAuthorized) {
+    return null;
+  }
+
+  return (
+    <>
+      <div
+        className={`${
+          hideContainer
+            ? "w-full"
+            : "border-b border-[#e7e5e4]  bg-[var(--lightGray)]"
+        } relative`}
+      >
+        <div className="flex flex-row items-center justify-between">
+          <div className="w-1/4 mx-2  pl-4">
+            <Link href="/">
+              <Image
+                src="/logo.svg"
+                loading="lazy"
+                alt="logo"
+                width={35}
+                height={35}
+                className="object-cover rounded-lg"
+              />
+            </Link>
+          </div>
+          {!profile ? (
+            <div>
+              <Link href="/auth">
+                <button className="bg-inherit px-4 py-2 rounded-md border-2 border-[#e7e7e7] hover:bg-[#f5f5f5] text-sm">
+                  Sign in / sign up
+                </button>
+              </Link>
+            </div>
+          ) : (
+            <div className="border-l border-[#e7e5e4]  w-full flex justify-between items-center pr-4">
+              <div className="relative flex items-center gap-4  p-4">
+                <div className="flex items-center gap-2">
+                  <PublishButton
+                    username={profile.user.username}
+                    email={profile.user.email}
+                    initialPublishState={isPublished}
+                    onPublishToggle={handlePublishToggle}
+                  />
+                  <CopyButton
+                    textToCopy={`Creatify.space/${profile.user.username}`}
+                  />
+                </div>
+              </div>
+              <div className="" onClick={handleProfileToggle}>
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary cursor-pointer">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-user h-4 w-4"
+                  >
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+        {profile && openProfile && <ProfileMenu />}
+      </div>
+    </>
+  );
+}

@@ -44,13 +44,22 @@ export async function POST(req) {
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
     
     // Save token to database with user ID
-    await prisma.verificationToken.create({
-      data: {
-        token,
-        userId: user.id,
-        expiresAt,
-      },
-    });
+    try {
+      const createdToken = await prisma.verificationToken.create({
+        data: {
+          token,
+          userId: user.id,
+          expiresAt,
+        },
+      });
+      console.log("Verification token created:", createdToken);
+    } catch (tokenError) {
+      console.error("Error creating verification token:", tokenError);
+      return new Response(JSON.stringify({ error: "Failed to create verification token" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
     // Build magic link
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
