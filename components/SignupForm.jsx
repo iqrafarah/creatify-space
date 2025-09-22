@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { validateEmail, validateUsername } from "@/lib/validators";
 import Link from "next/link";
 import Image from "next/image";
-import Toast from "./Toast";
+import Toast from "./Notifications/Toast";
 
 export default function SignupForm() {
   const [email, setEmail] = useState("");

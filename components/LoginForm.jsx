@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { validateEmail } from "@/lib/validators";
 import Link from "next/link";
-import Toast from "./Toast";
+import Toast from "./Notifications/Toast";
 import Image from "next/image";
 
 export default function LoginForm() {

@@ -25,7 +25,8 @@
   body {
     overflow-y: hidden;
     font-family: "Geist Sans", sans-serif;
-  }
+    font-size: 16px;
+  } 
 }
 
 .page {

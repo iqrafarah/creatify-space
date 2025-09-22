@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Toast from "@/components/Toast";
+import Toast from "@/components/Notifications/Toast";
 
 const CopyButton = ({ textToCopy }) => {
   const [notifications, setNotifications] = useState([]);

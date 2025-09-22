@@ -17,16 +17,6 @@ export async function GET() {
       where: { userId }
     });
 
-    const experiences = await prisma.experience.findMany({
-      where: { userId },
-      orderBy: { order: 'asc' }
-    });
-
-    const skills = await prisma.skill.findMany({
-      where: { userId },
-      orderBy: { order: 'asc' }
-    });
-
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -47,10 +37,6 @@ export async function GET() {
       profile: {
         ...profile,
         user,
-        experiences,
-        skills: skills.map(skill => skill.name),
-        createdAt: profile.createdAt.toISOString(),
-        updatedAt: profile.updatedAt.toISOString()
       }
     });
   } catch (error) {
@@ -76,7 +62,7 @@ export async function PUT(request) {
     const body = await request.json();
 
     // Only allow updating certain fields
-    const { name, headline, shortDescription, imageUrl } = body;
+    const { name, headline, shortDescription, imageUrl, summary } = body;
 
     const updatedProfile = await prisma.profile.update({
       where: { userId },
@@ -85,6 +71,7 @@ export async function PUT(request) {
         headline,
         shortDescription,
         imageUrl,
+        summary,
         updatedAt: new Date(),
       },
     });

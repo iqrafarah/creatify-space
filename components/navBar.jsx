@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import useAuth from "@/hooks/useAuth";
 import CopyButton from "@/components/CopyButton";
 import PublishButton from "@/components/PublishButton";
-import { fetchProfile } from "@/lib/fetchProfile";
+import { fetchProfile } from "@/lib/profileService";
 
 export default function NavBar({ hideContainer }) {
   const { isAuthorized } = useAuth();
@@ -60,7 +60,7 @@ export default function NavBar({ hideContainer }) {
           hideContainer
             ? "w-full"
             : "border-b border-[#e7e5e4]  bg-[var(--lightGray)]"
-        } relative py-2`}
+        } relative`}
       >
         <div className="flex flex-row items-center justify-between">
           <div className="w-1/4 mx-2  pl-4">

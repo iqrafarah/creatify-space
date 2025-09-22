@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function Sidebar() {
   return (
     <div className="flex flex-col justify-between h-fit sm:h-screen lg:w-1/4 p-4 mx-2">
-      <div className="h-full border-b-[0.5px] mb-5">
+      <div>
         <div className="w-full flex flex-col gap-2">
           <Link href="/dashboard">
             <button className="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-9 py-2 w-full justify-start hover:bg-white focus:bg-white focus:shadow-sm focus:border focus:border-input">
