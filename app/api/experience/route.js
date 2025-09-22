@@ -57,35 +57,15 @@ export async function PUT(request) {
         data: {
           title: data.title,
           company: data.company,
-          location: data.location,
-          startDate: data.startDate,
-          endDate: data.endDate,
-          current: data.current || false,
-          description: data.description,
+          duration: data.duration,
+          logo: data.logo,
           order: data.order
+          
         }
       });
       
       return NextResponse.json({ success: true, experience: updatedExperience });
     } 
-    // If creating a new experience
-    else {
-      const newExperience = await prisma.experience.create({
-        data: {
-          userId,
-          title: data.title,
-          company: data.company,
-          location: data.location,
-          startDate: data.startDate,
-          endDate: data.endDate,
-          current: data.current || false,
-          description: data.description,
-          order: data.order || 0
-        }
-      });
-      
-      return NextResponse.json({ success: true, experience: newExperience });
-    }
   } catch (error) {
     console.error("Experience update error:", error);
     return NextResponse.json({ error: "Failed to update experience" }, { status: 500 });
@@ -99,8 +79,7 @@ export async function DELETE(request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const url = new URL(request.url);
-    const id = url.searchParams.get('id');
+    const { id } = await request.json();
 
     if (!id) {
       return NextResponse.json({ error: "Experience ID is required" }, { status: 400 });
@@ -143,7 +122,7 @@ export async function POST(request) {
         title: data.title || "",
         company: data.company || "",
         duration: data.duration || "",
-        logo: data.logo || "",
+        logo: data.logo || "/logo.svg",
         order: data.order || 0
       }
     });

@@ -3,17 +3,18 @@ import React from 'react';
 import Image from "next/image";
 
 const ExperienceItem = ({ experience }) => (
+      
   <div className="flex flex-row w-full gap-2 mt-5">
     <div className="flex flex-row items-center gap-4 w-full">
       <div className="w-15 h-10 min-w-10 rounded-full flex items-center justify-center flex-shrink-0">
         <Image
-          src={experience.logo || "/default-logo.png"}
-          width={65}
-          height={65}
+          src={experience.logo || "/logo.svg"}
+          width={55}
+          height={55}
           alt={`${experience.company} logo`}
-          className="w-[65px] h-[65px] min-w-10 rounded-full object-cover bg-[#f5f5f5] border border-[#1e1e1e]"
+          className="w-[55px] h-[55px] min-w-10 rounded-full object-cover bg-[#f5f5f5] border border-[#1e1e1e]"
           onError={(e) => {
-            e.target.src = "/default-logo.png";
+            e.target.src = "/logo.svg";
           }}
         />
       </div>
@@ -23,7 +24,10 @@ const ExperienceItem = ({ experience }) => (
           {experience.company}
         </p>
         <p className="text-sm tracking-tight line-clamp-1 text-start text-muted-foreground leading-normal">
-          {experience.period}
+          {experience.title}
+        </p>
+        <p className="text-sm tracking-tight line-clamp-1 text-start text-muted-foreground leading-normal">
+          {experience.duration}
         </p>
         {experience.position && (
           <p className="text-sm tracking-tight line-clamp-1 text-start text-gray-400 leading-normal">
@@ -40,6 +44,7 @@ export const ExperienceSection = ({
   isMobilePreview = false,
   className = "flex flex-col gap-6 items-start justify-center mb-5 pb-14 sm:border-b sm:border-[#1e1e1e]"
 }) => {
+  
   if (!data || data.length === 0) return null;
 
   const gridClass = isMobilePreview 

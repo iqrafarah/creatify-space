@@ -11,6 +11,7 @@ export const PreviewContent = ({
   isMobilePreview = false,
   className = ""
 }) => {
+
   const containerClass = isMobilePreview ? "max-w-[390px] mx-auto" : "w-full";
 
   return (

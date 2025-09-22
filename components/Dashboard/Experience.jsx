@@ -29,16 +29,13 @@ export default function Experience({ onUpdate }) {
     const loadExperiences = async () => {
       try {
         const response = await fetchExperience();
-        
         if (response.error) {
           console.error("Error fetching experiences:", response.error);
           addNotification("Failed to load experiences");
           setExperiences([]);
         } else {
-            console.log("Fetched experiences:", response.experiences);  
           setExperiences(response.experiences || []);
         }
-        
         setHasLoaded(true);
       } catch (error) {
         console.error("Error loading experiences:", error);
@@ -62,7 +59,6 @@ export default function Experience({ onUpdate }) {
   const addExperience = async (newExperience) => {
     try {
       const response = await createExperience(newExperience);
-      
       if (response.success) {
         addNotification("Experience saved successfully🎉");
         const updatedExperiences = [...experiences, response.experience];
@@ -80,10 +76,9 @@ export default function Experience({ onUpdate }) {
   const handleDeleteExperience = async (id) => {
     try {
       const response = await deleteExperience(id);
-      
       if (response.success) {
         addNotification("Experience deleted successfully🚀");
-        const updatedExperiences = experiences.filter((exp) => exp._id !== id);
+        const updatedExperiences = experiences.filter((exp) => exp.id !== id);
         setExperiences(updatedExperiences);
       } else {
         addNotification(`Failed to delete experience: ${response.error}`);
@@ -98,11 +93,9 @@ export default function Experience({ onUpdate }) {
     try {
       const experienceWithId = {
         ...updatedExperience,
-        id: experiences[index]._id
+        id: experiences[index].id
       };
-      
       const response = await updateExperience(experienceWithId);
-      
       if (response.success) {
         addNotification("Experience updated successfully🚀");
         const updatedExperiences = experiences.map((exp, idx) =>
@@ -145,7 +138,7 @@ export default function Experience({ onUpdate }) {
               experience={exp}
               onSave={(updatedExperience) => handleUpdateExperience(updatedExperience, index)}
               onCancel={() => toggleEdit(index)}
-              onDelete={() => handleDeleteExperience(exp._id)}
+              onDelete={() => handleDeleteExperience(exp.id)}
             />
           ) : (
             <ExperienceCard
@@ -162,6 +155,7 @@ export default function Experience({ onUpdate }) {
             experience={{ company: "", title: "", period: "", logo: "" }}
             onSave={addExperience}
             onCancel={() => toggleEdit(-1)}
+            onDelete={() => {}} // No-op for add form
           />
         )}
 
@@ -178,6 +172,7 @@ export default function Experience({ onUpdate }) {
     </>
   );
 }
+
 // Extracted component for better organization
 const ExperienceCard = ({ experience, onClick }) => (
   <div

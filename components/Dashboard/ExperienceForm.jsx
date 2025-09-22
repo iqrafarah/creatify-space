@@ -4,26 +4,28 @@ import Image from "next/image";
 import { FormField } from "@/components/Forms/FormField";
 import { ActionButtons } from "@/components/Forms/ActionButtons";
 
-export default function ExperienceForm({ 
-  experience, 
-  onSave, 
-  onCancel, 
-  onDelete 
+export default function ExperienceForm({
+  experience,
+  onSave,
+  onCancel,
+  onDelete,
 }) {
   const [formData, setFormData] = useState({
     company: experience?.company || "",
-    period: experience?.period || "",
-    logo: experience?.logo || ""
+    title: experience?.title || "",
+    period: experience?.duration || "", // Keep as period in form for UX
+    logo: experience?.logo || "",
   });
   const [logoFile, setLogoFile] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
+  const isNewExperience = !experience?.id;
 
   // Handle logo file upload
   useEffect(() => {
     if (logoFile) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData(prev => ({ ...prev, logo: reader.result }));
+        setFormData((prev) => ({ ...prev, logo: reader.result }));
       };
       reader.readAsDataURL(logoFile);
     }
@@ -31,7 +33,7 @@ export default function ExperienceForm({
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleLogoChange = (e) => {
@@ -42,15 +44,18 @@ export default function ExperienceForm({
   };
 
   const handleSave = async () => {
-    if (!formData.company.trim()) {
-      return; // Don't save if company name is empty
+    if (!formData.company.trim() || !formData.period.trim()) {
+      return; // Don't save if required fields are empty
     }
 
     setIsSaving(true);
     try {
       const experienceData = {
         ...experience,
-        ...formData
+        company: formData.company,
+        title: formData.title,
+        duration: formData.period, // Map period to duration for API
+        logo: formData.logo,
       };
       await onSave(experienceData);
     } finally {
@@ -59,8 +64,12 @@ export default function ExperienceForm({
   };
 
   const handleDelete = () => {
-    if (experience?._id && onDelete) {
-      onDelete(experience._id);
+    console.log("Experience object on delete:", experience);
+    const expId = experience.id;
+    if (expId) {
+      onDelete(expId);
+    } else {
+      console.error("No ID found for deletion.");
     }
   };
 
@@ -78,18 +87,17 @@ export default function ExperienceForm({
           required
         />
 
-          <FormField
-          label="Title"
+        <FormField
+          label="Job Title"
           name="title"
-          placeholder="Example Title"
+          placeholder="Software Engineer"
           value={formData.title}
           onChange={handleInputChange}
           required
         />
 
-
         <FormField
-          label="Period"
+          label="Duration"
           name="period"
           placeholder="Jan 2023 - Present"
           value={formData.period}
@@ -98,26 +106,20 @@ export default function ExperienceForm({
         />
 
         <div className="flex flex-col gap-2">
-          <label className="text-muted text-sm">
-            Company Logo
-          </label>
+          <label className="text-muted text-sm">Company Logo</label>
           <div className="flex gap-3 items-center">
-            <LogoUpload
-              logo={formData.logo}
-              onLogoChange={handleLogoChange}
-            />
-            <div className="flex-1 flex gap-2">
+            <LogoUpload logo={formData.logo} onLogoChange={handleLogoChange} />
+            <div className="w-full flex gap-2">
               <ActionButtons
                 onSave={handleSave}
                 onCancel={onCancel}
+                onDelete={handleDelete} // <-- Fix here
+                showDelete={true}
                 isLoading={isSaving}
                 saveDisabled={!isValid}
                 showCancel={true}
-                className="flex gap-2"
+                className="w-full flex gap-2"
               />
-              {onDelete && experience?._id && (
-                <DeleteButton onDelete={handleDelete} />
-              )}
             </div>
           </div>
         </div>
@@ -163,28 +165,4 @@ const LogoUpload = ({ logo, onLogoChange }) => (
       </svg>
     )}
   </label>
-);
-
-// Delete button component
-const DeleteButton = ({ onDelete }) => (
-  <button
-    onClick={onDelete}
-    className="inline-flex items-center w-fit px-3 py-2 justify-center rounded-md text-sm border border-input hover:bg-red-50 hover:border-red-300 transition-colors"
-    title="Delete experience"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth="1.5"
-      stroke="currentColor"
-      className="w-4 h-4 text-red-500"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244 2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-      />
-    </svg>
-  </button>
 );
