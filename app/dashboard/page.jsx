@@ -61,6 +61,7 @@ export default function DashboardPage() {
 
   const isLoading = authLoading || profileLoading;
 
+  console.log("Form Data:", formData);
   if (isLoading) {
     return <LoadingSpinner />;
   }

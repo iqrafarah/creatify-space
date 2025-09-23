@@ -5,7 +5,7 @@ const initialFormData = {
   hero: { title: "", position: "", description: "", image: "" },
   about: { about: "" },
   experiences: [],
-  skills: { skills: [] },
+   skills: { skills: [] },
   footer: { title: "", description: "", email: "" }
 };
 

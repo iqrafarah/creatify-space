@@ -1,4 +1,3 @@
-// components/Preview/sections/SkillsSection.jsx
 import React from 'react';
 
 const SkillBadge = ({ skill }) => (
@@ -11,14 +10,27 @@ export const SkillsSection = ({
   data, 
   className = "flex flex-col gap-6 my-8 items-start border-b pb-12 border-[#1e1e1e]"
 }) => {
-  if (!data?.skills || data.skills.length === 0) return null;
+  console.log("SkillsSection received data:", data);
+  
+  // Handle different possible data formats
+  let skillsArray;
+  
+  if (Array.isArray(data)) {
+    skillsArray = data;
+  } else if (data?.skills && Array.isArray(data.skills)) {
+    skillsArray = data.skills;
+  } else {
+    skillsArray = [];
+  }
+  
+  if (skillsArray.length === 0) return null;
 
   return (
     <div className={className}>
       <h2 className="text-xl font-semibold">Skills</h2>
       <div className="flex flex-wrap gap-3 w-full">
-        {data.skills.map((skill, index) => (
-          <SkillBadge key={index} skill={skill} />
+        {skillsArray.map((skill, index) => (
+          <SkillBadge key={index} skill={typeof skill === 'string' ? skill : skill.name || ''} />
         ))}
       </div>
     </div>

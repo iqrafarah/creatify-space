@@ -1,4 +1,3 @@
-// components/Dashboard/FormsSection.jsx
 import React from 'react';
 import Hero from "@/components/Dashboard/Hero";
 import About from "@/components/Dashboard/About";
@@ -28,8 +27,12 @@ export const FormsSection = ({
           />
           
           <Skills 
-            skillsFormData={formData.skills} 
-            setSkillsFormData={(data) => updateSection('skills', data)} 
+            skillsDataChange={(data) => {
+              console.log("Skills data being sent to dashboard state:", data);
+              // Wrap skill names in the expected format
+              updateSection('skills', { skills: data });
+            }} 
+            skills={formData.skills?.skills || formData.skills || []}
           />
           
           <Footer 
