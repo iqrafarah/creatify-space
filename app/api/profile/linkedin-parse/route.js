@@ -40,6 +40,11 @@ export async function GET() {
       orderBy: { order: 'asc' }
     });
     
+    // Get user's footer (if any)
+    const footer = await prisma.footer.findUnique({
+      where: { userId }
+    });
+    
     if (!profile) {
       return NextResponse.json({ 
         hasProfile: false,
@@ -54,6 +59,7 @@ export async function GET() {
         ...profile,
         experiences,
         skills: skills.map(skill => skill.name),
+        footer,
         createdAt: profile.createdAt.toISOString(),
         updatedAt: profile.updatedAt.toISOString()
       }
@@ -143,6 +149,24 @@ export async function POST(req) {
           name: skill,
           order: index
         }))
+      });
+    }
+
+    // Create or update footer with example content
+    const existingFooter = await prisma.footer.findUnique({
+      where: { userId }
+    });
+
+    if (!existingFooter) {
+      // Create example footer only if one doesn't exist yet
+      await prisma.footer.create({
+        data: {
+          userId,
+          title: "Let's Connect!",
+          description: "I'm always open to discussing new projects, creative ideas or opportunities to be part of your vision.",
+          contactUrl: linkedInData.profile.email || "hello@example.com",
+          cvUrl: "https://example.com/resume.pdf"
+        }
       });
     }
 

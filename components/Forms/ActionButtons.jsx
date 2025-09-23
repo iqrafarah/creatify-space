@@ -66,7 +66,7 @@ export const ActionButtons = ({
         <button
           type="button"
           onClick={onDelete}
-          className="inline-flex items-center w-fit px-4 py-2 justify-center rounded-md text-sm border border-input hover:bg-red-100 hover:border-red-300 transition-colors"
+          className="inline-flex items-center w-fit px-4 py-2 justify-center rounded-md text-sm border border-[var(--input)] hover:bg-red-100 hover:border-red-300 transition-colors"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

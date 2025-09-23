@@ -8,7 +8,7 @@ export default function Sidebar() {
       <div>
         <div className="w-full flex flex-col gap-2">
           <Link href="/dashboard">
-            <button className="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-9 py-2 w-full justify-start hover:bg-white focus:bg-white focus:shadow-sm focus:border focus:border-input">
+            <button className="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-9 py-2 w-full justify-start hover:bg-white focus:bg-white focus:shadow-sm focus:border focus:border-[var(--input)]">
               <div className="flex gap-3 items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

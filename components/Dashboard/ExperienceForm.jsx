@@ -130,7 +130,7 @@ export default function ExperienceForm({
 
 // Logo upload component
 const LogoUpload = ({ logo, onLogoChange }) => (
-  <label className="inline-flex items-center p-1 justify-center rounded-md text-sm border border-input cursor-pointer bg-gray-50 text-gray-600 hover:bg-gray-100 transition-colors">
+  <label className="inline-flex items-center p-1 justify-center rounded-md text-sm border border-[var(--input)] cursor-pointer bg-gray-50 text-gray-600 hover:bg-gray-100 transition-colors">
     <input
       type="file"
       accept="image/*"
