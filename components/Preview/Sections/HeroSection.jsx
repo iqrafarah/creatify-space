@@ -1,49 +1,44 @@
-// components/Preview/sections/HeroSection.jsx
-import React from 'react';
+import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
-export const HeroSection = ({ 
-  data, 
+
+export const HeroSection = ({
+  data,
+  hireMe,
   isMobilePreview = false,
-  className = ""
+  className = "",
 }) => {
-  const layoutClass = isMobilePreview 
-    ? "flex-col items-center justify-center" 
+  const layoutClass = isMobilePreview
+    ? "flex-col items-center justify-center"
     : "flex-row items-center";
-    
-  const textAlignment = isMobilePreview ? "items-center text-center" : "items-start text-left";
+
+  const textAlignment = isMobilePreview
+    ? "items-center text-center"
+    : "items-start text-left";
 
   return (
-    <div className={`${layoutClass} flex gap-5 w-full sm:pb-12 sm:border-b sm:border-[#1e1e1e] ${className}`}>
-      <Image
-        src={data.image || "/default-profile.png"}
-        alt="Profile"
-        width={150}
-        height={150}
-        className="border-2 border-[#1e1e1e] w-36 h-36 max-h-36 max-w-36 rounded-full object-cover object-center flex-shrink-0"
-        onError={(e) => {
-          e.target.src = "/default-profile.png";
-        }}
-      />
-      
-      <div className={`flex flex-col gap-2 w-full ${textAlignment}`}>
-        {data.title && (
-          <h1 className="text-2xl sm:text-3xl font-bold text-white">
-            {data.title}
-          </h1>
-        )}
-        
-        {data.position && (
-          <p className="text-xl font-semibold text-[#d5e4fd] leading-6 whitespace-pre-wrap break-words">
-            {data.position}
-          </p>
-        )}
-        
-        {data.description && (
-          <p className="text-base text-gray-300 leading-6 whitespace-pre-wrap">
-            {data.description}
-          </p>
-        )}
+    <div className="flex cursor-default flex-col gap-5 pt-[150px] lg:pt-[100px] items-start justify-center -mt-20">
+      <div className="flex items-center gap-3">
+        <span className="dot"></span>
+        <span className="text-[var(--lightgrey)] text-sm">
+          Available for new opportunities
+        </span>
+      </div>
+
+      <div className="flex flex-col gap-2 text-xl font-medium tracking-tight md:text-3xl lg:text-3xl lg:leading-[1.1]">
+        <h1 className="text-[var(--lightgrey)]">Hi there. I&rsquo;m {data.title}</h1>
+        <h2>{data.position}</h2>
+      </div>
+      <p className="text-[var(--lightgrey)] text-base leading-relaxed max-w-2xl">
+        {data.description}
+      </p>
+      <div className="flex gap-3">
+        <Link href={`mailto:${hireMe}`}>
+          <button className="bg-[var(--purple)] text-white font-medium h-4 py-4 text-[13px] px-4 rounded-full border border-[var(--purple)] inline-flex items-center justify-center hover:bg-[var(--foreground)] hover:text-[var(--background)] hover:border-white">
+            Hire me
+          </button>
+        </Link>
       </div>
     </div>
   );

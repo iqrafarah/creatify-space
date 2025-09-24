@@ -24,7 +24,6 @@ export async function GET() {
         title: "",
         description: "",
         contactUrl: "",
-        cvUrl: ""
       });
     }
 
@@ -44,7 +43,7 @@ export async function PUT(request) {
     }
 
     const data = await request.json();
-    const { title, description, contactUrl, cvUrl } = data;
+    const { title, description, contactUrl} = data;
 
     // Check if footer exists for this user
     const existingFooter = await prisma.footer.findFirst({
@@ -61,7 +60,6 @@ export async function PUT(request) {
           title: title || "",
           description: description || "",
           contactUrl: contactUrl || "",
-          cvUrl: cvUrl || ""
         },
       });
       
@@ -82,7 +80,6 @@ export async function PUT(request) {
           title: title || "",
           description: description || "",
           contactUrl: contactUrl || "",
-          cvUrl: cvUrl || ""
         },
       });
       

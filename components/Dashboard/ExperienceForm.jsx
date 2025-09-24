@@ -1,8 +1,8 @@
-// components/Dashboard/ExperienceForm.jsx
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { FormField } from "@/components/Forms/FormField";
 import { ActionButtons } from "@/components/Forms/ActionButtons";
+import LoadingForm from "@/components/Forms/LoadingForm";
 
 export default function ExperienceForm({
   experience,
@@ -19,6 +19,12 @@ export default function ExperienceForm({
   const [logoFile, setLogoFile] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const isNewExperience = !experience?.id;
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Set loading state to false after component mounts
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
 
   // Handle logo file upload
   useEffect(() => {
@@ -75,6 +81,10 @@ export default function ExperienceForm({
 
   const isValid = formData.company.trim() && formData.period.trim();
 
+  if (isLoading) {
+    return <LoadingForm />;
+  }
+
   return (
     <div className="rounded-lg border bg-card text-card-foreground p-4 shadow-sm w-full">
       <div className="flex flex-col gap-4">
@@ -113,8 +123,8 @@ export default function ExperienceForm({
               <ActionButtons
                 onSave={handleSave}
                 onCancel={onCancel}
-                onDelete={handleDelete} // <-- Fix here
-                showDelete={true}
+                onDelete={handleDelete}
+                showDelete={!isNewExperience}
                 isLoading={isSaving}
                 saveDisabled={!isValid}
                 showCancel={true}
@@ -127,6 +137,7 @@ export default function ExperienceForm({
     </div>
   );
 }
+
 
 // Logo upload component
 const LogoUpload = ({ logo, onLogoChange }) => (

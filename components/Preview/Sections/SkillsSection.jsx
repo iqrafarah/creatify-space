@@ -1,16 +1,15 @@
 import React from 'react';
-
+  
 const SkillBadge = ({ skill }) => (
-  <span className="flex font-medium items-center justify-center bg-[#121212] border border-[#252525] px-8 h-10 min-w-[80px] rounded-full w-fit text-sm hover:bg-[#1a1a1a] transition-colors">
+  <span className="flex items-center justify-center bg-[var(--button)] border border-[var(--grey)] px-8 h-10 min-w-[80px] rounded-md w-fit text-sm font-medium">
     {skill}
   </span>
 );
 
 export const SkillsSection = ({ 
   data, 
-  className = "flex flex-col gap-6 my-8 items-start border-b pb-12 border-[#1e1e1e]"
+  className = "flex flex-col gap-6 my-8 items-start pb-12 border-[var(--grey)]"
 }) => {
-  console.log("SkillsSection received data:", data);
   
   // Handle different possible data formats
   let skillsArray;
@@ -34,5 +33,7 @@ export const SkillsSection = ({
         ))}
       </div>
     </div>
+
+
   );
 };

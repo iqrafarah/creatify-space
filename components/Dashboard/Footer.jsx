@@ -25,7 +25,6 @@ export default function Footer({ footerDataChange, initialData }) {
     title: "",
     description: "",
     contactUrl: "",  // Using contactUrl field from schema
-    cvUrl: ""        // Including cvUrl from schema
   });
 
   // Memoize footerDataChange to prevent unnecessary re-renders
@@ -45,7 +44,6 @@ export default function Footer({ footerDataChange, initialData }) {
             title: initialData.title || "",
             description: initialData.description || "",
             contactUrl: initialData.contactUrl || "",
-            cvUrl: initialData.cvUrl || ""
           };
         } else {
           const response = await fetchFooter();
@@ -55,14 +53,12 @@ export default function Footer({ footerDataChange, initialData }) {
               title: f.title || "",
               description: f.description || "",
               contactUrl: f.contactUrl || "",
-              cvUrl: f.cvUrl || ""
             };
           } else {
             footerData = {
               title: "",
               description: "",
               contactUrl: "",
-              cvUrl: ""
             };
           }
         }
@@ -88,7 +84,6 @@ export default function Footer({ footerDataChange, initialData }) {
         title: formData.title,
         description: formData.description, 
         contactUrl: formData.contactUrl,
-        cvUrl: formData.cvUrl
       });
     }
   }, [formData, isLoading, hasLoaded, stableFooterDataChange, isChanged]);
@@ -99,7 +94,6 @@ export default function Footer({ footerDataChange, initialData }) {
         title: formData.title,
         description: formData.description,
         contactUrl: formData.contactUrl,
-        cvUrl: formData.cvUrl
       });
     }
   }, [formData, stableFooterDataChange]);
@@ -119,7 +113,6 @@ export default function Footer({ footerDataChange, initialData }) {
         title: formData.title,
         description: formData.description,
         contactUrl: formData.contactUrl,
-        cvUrl: formData.cvUrl
       });
 
       if (response?.success) {
@@ -152,7 +145,6 @@ export default function Footer({ footerDataChange, initialData }) {
         title: originalData.title,
         description: originalData.description,
         contactUrl: originalData.contactUrl,
-        cvUrl: originalData.cvUrl
       });
     }
   };
@@ -185,14 +177,6 @@ export default function Footer({ footerDataChange, initialData }) {
           name="contactUrl"  // Using contactUrl field for email
           placeholder="example@example.com"
           value={formData.contactUrl}
-          onChange={handleInputChange}
-        />
-
-        <FormField
-          label="CV/Resume URL"
-          name="cvUrl"
-          placeholder="https://example.com/resume.pdf"
-          value={formData.cvUrl}
           onChange={handleInputChange}
         />
 

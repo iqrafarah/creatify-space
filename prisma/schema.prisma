@@ -54,6 +54,7 @@ model Experience {
   duration  String
   logo      String?
   order     Int
+  published  Boolean
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -81,5 +82,4 @@ model Footer {
   title       String
   description String
   contactUrl  String
-  cvUrl       String
 }

@@ -18,6 +18,7 @@
   --grey: #282828;
   --lightgrey: rgb(133, 133, 136);
   --purple: rgb(105, 81, 255);
+  --border: #181818;
 }
 
 @layer utilities {
@@ -88,7 +89,7 @@
   position: fixed;
   bottom: 1rem;
   right: 1rem;
-  width: 400px;
+  min-width: 300px;
   padding: 12px 16px;
   background-color: white;
   border: 1px solid #ddd;

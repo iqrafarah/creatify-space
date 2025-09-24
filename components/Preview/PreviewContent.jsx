@@ -38,6 +38,7 @@ export const PreviewContent = ({
     >
       <HeroSection 
         data={formData.hero} 
+        hireMe={formData.footer.contactUrl}
         isMobilePreview={isMobilePreview}
       />
       
@@ -55,7 +56,8 @@ export const PreviewContent = ({
       />
       
       <FooterSection 
-        data={formData.footer} 
+        data={formData.footer}
+        heroImage={formData.hero.image}
       />
       
       {/* <ColorPalette onColorChange={handleColorChange} /> */}

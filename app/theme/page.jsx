@@ -223,7 +223,7 @@ export default function ThemePage() {
                 width={300}
                 height={300}
                 alt="logo"
-                className="max-w-full max-h-[450px] w-full h-screen rounded-md border border-[var(--lightgrey)] object-cover"
+                className="max-w-full max-h-[450px] w-full h-screen rounded-md border border-[var(--grey)] object-cover"
               />
             </div>
           </div>
@@ -242,22 +242,17 @@ export default function ThemePage() {
               Experience
             </h2>
             <div className="grid sm:grid-cols-2 gap-x-2 gap-y-3 w-full">
-              {experience.map((exp, index) => (
+              {experience.map((experience, index) => (
                 <div key={index} className="flex flex-row w-full gap-x-4 mt-5">
                   <div className="bg-[var(--button)] border border-[var(--grey)] p-2 py-4 rounded-md flex flex-row items-center gap-4 w-full">
-                    {exp.logo && (
+                    {experience.logo && (
                       <div className="w-15 h-10 min-w-10 rounded-full flex items-center justify-center">
                         <Image
-                          src={exp.logo}
+                          src={experience.logo || "/logo.svg"}
                           width={200}
                           height={100}
                           alt="logo"
                           className="w-[200px] h-full min-h-[60px] rounded-xl object-cover"
-                          style={{
-                            backgroundColor: "#000",
-                            borderColor: initialColors.borderColor,
-                            borderWidth: "1px",
-                          }}
                         />
                       </div>
                     )}
@@ -265,12 +260,11 @@ export default function ThemePage() {
                     <div className="flex flex-col">
                       <p
                         className="text-base tracking-tight line-clamp-1 font-medium text-start transition-all leading-normal"
-                        style={{ color: initialColors.headingColor }}
                       >
-                        {exp.company}
+                         {experience.company}
                       </p>
                       <p className="text-sm tracking-tight line-clamp-1 text-start transition-all leading-normal">
-                        {exp.period}
+                      {experience.title} - {experience.duration}
                       </p>
                     </div>
                   </div>
@@ -293,17 +287,7 @@ export default function ThemePage() {
             >
               Skills
             </h2>
-            <div className="flex flex-wrap gap-3">
-              {skills[0].skills.map((skill, index) => (
-                <span
-                  key={index}
-                  className="flex items-center justify-center bg-[var(--button)] border border-[var(--lightgrey)] px-8 h-10 min-w-[80px] rounded-md w-fit text-sm font-medium"
-                  style={{ borderColor: initialColors.borderColor }}
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
+           
           </div>
         )}
         {/* END Skills Section */}
@@ -319,12 +303,10 @@ export default function ThemePage() {
               className="bg-white border border-grey rounded-full"
             />
             <h3 className="text-white text-3xl md:text-4xl font-medium tracking-tight">
-              Let&apos;s be in touch!
+             {data.title}
             </h3>
             <p className="text-center text-lightgrey text-lg leading-relaxed max-w-2xl">
-              lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad
+             {data.description}
             </p>
             <div className="flex gap-3">
               <button className="bg-[var(--purple)] text-white font-medium h-12 py-3 px-8 rounded-full border border-[var(--purple)] inline-flex items-center justify-center hover:bg-[var(--foreground)] hover:text-[var(--background)] hover:border-white">
