@@ -18,7 +18,7 @@ export default function NavBar({ hideContainer }) {
   const pathname = usePathname();
 
   // paths where navbar should be hidden
-  const hiddenPaths = ["/login", "/signup", "/onboarding"];
+  const hiddenPaths = ["/login", "/signup", "/onboarding", "/theme"];
   const shouldHide =
     hiddenPaths.includes(pathname) || pathname.includes("[username]");
 

@@ -70,6 +70,15 @@ export default function DashboardPage() {
     return null;
   }
 
+    const handleColorChange = (updatedColors) => {
+    setBackgroundColor(updatedColors.background);
+    setHeadingsColor(updatedColors.headings);
+    setPositionColor(updatedColors.position);
+    setTextColor(updatedColors.text);
+    setBorderColor(updatedColors.border);
+    setButtonsColor(updatedColors.buttons);
+  };
+
   return (
     <DashboardLayout>
       <FormsSection 
@@ -79,6 +88,7 @@ export default function DashboardPage() {
       
       <PreviewSection 
         formData={formData} 
+        handleColorChange={handleColorChange}
         isMobilePreview={isMobilePreview}
         setIsMobilePreview={setIsMobilePreview}
       />

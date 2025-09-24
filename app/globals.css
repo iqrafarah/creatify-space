@@ -11,6 +11,13 @@
   --darkBlue: rgb(15 23 42);
   --dark: rgb(148 163 184);
   --lightGray: #f9f9f9;
+
+  --background: #000000;
+  --foreground: #ffffff;
+  --button: #141414;
+  --grey: #282828;
+  --lightgrey: rgb(133, 133, 136);
+  --purple: rgb(105, 81, 255);
 }
 
 @layer utilities {
@@ -26,7 +33,7 @@
     overflow-y: hidden;
     font-family: "Geist Sans", sans-serif;
     font-size: 16px;
-  } 
+  }
 }
 
 .page {
@@ -117,4 +124,84 @@
   width: 14px;
   height: 14px;
   animation: spin 1s linear infinite;
+}
+
+.dot {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #b0a3ff;
+  -webkit-animation: glowing 1s ease-in-out infinite alternate;
+  -moz-animation: glowing 1s ease-in-out infinite alternate;
+  animation: glowing 1s ease-in-out infinite alternate;
+}
+@-webkit-keyframes glowing {
+  from {
+    box-shadow: 0 0 5px #9080f5, 0 0 5px #9080f5, 0 0 5px #9080f5,
+      0 0 20px #9080f5;
+  }
+  to {
+    box-shadow: 0 0 10px #9080f5, 0 0 10px #9080f5, 0 0 10px #9080f5,
+      0 0 10px #9080f5;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .mobile-menu {
+    height: fit-content;
+    display: flex;
+    align-content: flex-start;
+    background: transparent !important;
+    border-radius: 20px;
+    padding: 0;
+  }
+}
+.dropdown {
+  position: absolute;
+  top: 120px;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 10px;
+  font-size: 22px;
+  background: black;
+  padding: 20px;
+  border-radius: 8px;
+  z-index: 10;
+}
+.dropdown li:nth-child(4) {
+  margin-bottom: 10px;
+}
+#hamburger {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  transition: transform 0.3s ease;
+}
+
+#hamburger .bar {
+  width: 25px;
+  height: 2px;
+  background-color: #fff;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+#hamburger.open {
+  position: absolute;
+  left: 90%;
+}
+#hamburger.open .bar:nth-child(1) {
+  transform: rotate(45deg) translate(0px, 6px);
+}
+
+#hamburger.open .bar:nth-child(2) {
+  transform: rotate(-45deg) translate(-1px, -5px);
+}
+
+@media (min-width: 768px) {
+  #hamburger {
+    display: none;
+  }
 }

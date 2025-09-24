@@ -7,6 +7,7 @@ export const PreviewSection = ({
   formData, 
   isMobilePreview, 
   setIsMobilePreview,
+  handleColorChange,
   className = "w-full lg:w-3/5 flex flex-col gap-4 shadow-none rounded-lg h-fit lg:h-full overflow-hidden"
 }) => {
   return (
@@ -22,6 +23,7 @@ export const PreviewSection = ({
       
       <PreviewContent 
         formData={formData}
+        handleColorChange={handleColorChange}
         isMobilePreview={isMobilePreview}
       />
     </div>

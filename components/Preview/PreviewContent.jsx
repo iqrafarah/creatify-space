@@ -7,10 +7,12 @@ import { ExperienceSection } from './sections/ExperienceSection';
 import { SkillsSection } from './sections/SkillsSection';
 import { FooterSection } from './sections/FooterSection';
 import LoadingForm from '@/components/Forms/LoadingForm';
+import ColorPalette from '@/components/Dashboard/Colors';
 
 export const PreviewContent = ({ 
   formData, 
   isMobilePreview = false,
+  handleColorChange,
   className = ""
 }) => {
 
@@ -27,6 +29,7 @@ export const PreviewContent = ({
   if (isLoading) {
     return <LoadingForm />;
   }
+  
 
   return (
     <div
@@ -54,6 +57,8 @@ export const PreviewContent = ({
       <FooterSection 
         data={formData.footer} 
       />
+      
+      {/* <ColorPalette onColorChange={handleColorChange} /> */}
     </div>
   );
 };
