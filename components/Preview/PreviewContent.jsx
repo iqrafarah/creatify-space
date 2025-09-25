@@ -44,6 +44,7 @@ export const PreviewContent = ({
       
       <AboutSection 
         data={formData.about} 
+        heroImage={formData.hero.image}
       />
       
       <ExperienceSection 

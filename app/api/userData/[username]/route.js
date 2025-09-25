@@ -1,70 +1,55 @@
-//app/api/userData/[username]/route.js
-
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 import prisma from "@/lib/db";
 
 export async function GET(request, { params }) {
   try {
     const { username } = params;
     
-    console.log("API received request for username:", username);
-    
     if (!username) {
-      return NextResponse.json(
-        { error: "Username is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Username is required' }, { 
+        status: 400,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
     }
 
-    // Fetch user data from all related tables based on username
     const userData = await prisma.user.findUnique({
-      where: { username: username },
+      where: { username },
       include: {
         profile: true,
-        experiences: { // Changed from experience to experiences
-          orderBy: {
-            order: 'asc'
-          }
+        experiences: {
+          orderBy: { order: "asc" },
         },
-        skills: true, // Changed from skill to skills
-        footer: true // Added footer relation if it exists
+        skills: {
+          orderBy: { order: "asc" },
+        },
+        Footer: true,
       },
     });
 
     if (!userData) {
-      console.log(`User not found for username: ${username}`);
-      // Return mock data if user not found
-      return NextResponse.json({
-        userData: {
-          colors: { backgroundColor: '#000', textColor: '#fff', headingColor: '#fff', borderColor: '#333' },
-          hero: true,
-          about: { about: true, text: "This is mock data for testing" },
-          experiences: [{
-            company: "Example Corp",
-            title: "Frontend Developer",
-            duration: "2020-Present",
-            logo: "/logo.svg",
-            order: 1
-          }],
-          skills: [{ 
-            skills: ["React", "Next.js", "JavaScript"] 
-          }],
-          footer: {
-            title: "Let's work together",
-            description: "I'm available for freelance projects"
-          }
-        }
+      return NextResponse.json({ error: 'User not found' }, { 
+        status: 404,
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
     }
-    
-    console.log("Returning userData for:", username);
-    return NextResponse.json({ userData });
 
+    return NextResponse.json(userData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
   } catch (error) {
-    console.error("User data fetch error:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch user data", details: error.message },
-      { status: 500 }
-    );
+    console.error('API Error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { 
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
   }
 }

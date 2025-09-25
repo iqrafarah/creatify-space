@@ -36,7 +36,7 @@ model Profile {
   id               String   @id @default(cuid())
   userId           String   @unique
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  published        Boolean  @default(false)  
+  isPublished        Boolean  @default(false)  
   name             String?
   headline         String?
   shortDescription String?

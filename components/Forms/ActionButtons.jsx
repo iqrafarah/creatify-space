@@ -20,7 +20,7 @@ export const ActionButtons = ({
       <button
         onClick={onSave}
         disabled={isLoading || saveDisabled}
-        className={`flex items-center justify-center font-medium bg-black hover:bg-btn text-white py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed ${
+        className={`flex items-center justify-center font-medium bg-[var(--primary)] hover:bg-btn text-white py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed ${
           showCancel ? "w-1/2" : "w-full"
         }`}
       >

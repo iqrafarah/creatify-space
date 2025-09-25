@@ -4,6 +4,7 @@ import Image from "next/image";
 
 export const AboutSection = ({
   data,
+  heroImage,
   className = "flex flex-col gap-2 my-3 items-start border-b pb-3 border-[#1e1e1e]",
 }) => {
   if (!data?.about) return null;
@@ -24,7 +25,7 @@ export const AboutSection = ({
 
       <div>
         <Image
-          src="/logo.svg"
+           src={heroImage || "/logo.svg"}
           width={300}
           height={300}
           alt="logo"

@@ -24,7 +24,7 @@ export const FooterSection = ({
         <h3 className="text-white text-2xl font-medium tracking-tight">
           {data.title}
         </h3>
-        <p className="text-center text-lightgrey leading-relaxed max-w-2xl">
+        <p className="text-center text-lightgrey text-sm leading-relaxed max-w-2xl">
           {data.description}
         </p>
         <div className="flex gap-3">

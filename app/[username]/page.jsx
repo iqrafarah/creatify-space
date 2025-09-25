@@ -1,35 +1,51 @@
 "use client";
-import { use, useState } from "react";
-import { notFound } from "next/navigation";
-import prisma from "@/lib/db";
+import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { notFound } from "next/navigation";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import {fetchUserData} from "@/lib/userDataServices"
 
-export default async function UserProfilePage({ params: { username } }) {
-  let userData = null;
+export default function UserProfilePage({ params }) {
+  const { username } = use(params);
+  const router = useRouter();
+  const [userData, setUserData] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  try {
-    userData = await prisma.user.findUnique({
-      where: { username },
-      include: {
-        profile: true,
-        experiences: {
-          orderBy: { order: "asc" },
-        },
-        skills: {
-          orderBy: { order: "asc" },
-        },
-        Footer: true,
-      },
-    });
-  } catch (error) {
-    console.error("Error fetching user data:", error);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await fetchUserData(username);
+        
+        // Check if profile exists and is published
+        if (!data?.profile || !data.profile.isPublished) {
+          setIsLoading(false);
+          router.replace("/404");
+          return;
+        }
+
+        setUserData(data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        setIsLoading(false);
+        router.replace("/404");
+      }
+    }
+
+    fetchData();
+  }, [username, router]);
+
+  // Show loading state
+  if (isLoading) {
+    return <LoadingSpinner />;
   }
 
-  // If user doesn't exist, show 404
-  if (!userData) {
-    notFound();
+  // Show 404 if user not found or not published
+  if (!userData || !userData.profile?.isPublished) {
+    return notFound();
   }
 
   // Default colors if not set
@@ -41,8 +57,6 @@ export default async function UserProfilePage({ params: { username } }) {
     borderColor: "#1e1e1e",
     buttonsColor: "#2563EB",
   };
-
-  console.log("User data fetched:", userData.profile);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -199,8 +213,7 @@ export default async function UserProfilePage({ params: { username } }) {
         {userData.experiences && userData.experiences.length > 0 && (
           <section
             id="experience"
-            className="flex flex-col gap-6 items-start justify-center h-full mb-5 pb-14 sm:border-b"
-            style={{ borderColor: colors.borderColor }}
+            className="flex flex-col gap-6 items-start justify-center h-full mb-5 pb-14"
           >
             <h2
               className="text-xl sm:text-2xl font-semibold"
