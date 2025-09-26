@@ -5,21 +5,23 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { notFound } from "next/navigation";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import {fetchUserData} from "@/lib/userDataServices"
+import { fetchUserData } from "@/lib/userDataServices";
 
+// Main component that shows a user's portfolio page (PUBLIC - NO AUTH REQUIRED)
 export default function UserProfilePage({ params }) {
   const { username } = use(params);
   const router = useRouter();
   const [userData, setUserData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true); // Added missing state
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
+  // Load user data when the page loads
   useEffect(() => {
     async function fetchData() {
       try {
         const data = await fetchUserData(username);
-        
-        // Check if profile exists and is published
+
+        // Redirect to 404 if profile doesn't exist or isn't published
         if (!data?.profile || !data.profile.isPublished) {
           setIsLoading(false);
           router.replace("/404");
@@ -38,17 +40,15 @@ export default function UserProfilePage({ params }) {
     fetchData();
   }, [username, router]);
 
-  // Show loading state
   if (isLoading) {
     return <LoadingSpinner />;
   }
 
-  // Show 404 if user not found or not published
   if (!userData || !userData.profile?.isPublished) {
     return notFound();
   }
 
-  // Default colors if not set
+  // Theme colors for the page
   const colors = {
     backgroundColor: "#0d0d0d",
     headingColor: "#ffffff",
@@ -58,6 +58,7 @@ export default function UserProfilePage({ params }) {
     buttonsColor: "#2563EB",
   };
 
+  // Handles mobile menu open/close
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -138,7 +139,7 @@ export default function UserProfilePage({ params }) {
             id="hero"
             className="flex cursor-default flex-col gap-5 pt-[150px] lg:pt-[180px] items-start justify-center -mt-20"
           >
-            {userData.profile.available === "true" && (
+            {userData.profile?.available && (
               <div className="flex items-center gap-3">
                 <span className="dot"></span>
                 <span className="text-[var(--lightgrey)] text-sm">

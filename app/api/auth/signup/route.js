@@ -4,20 +4,17 @@ import { cookies } from "next/headers";
 import crypto from "crypto";
 import { SendMagicLinkEmail } from "@/lib/email";
 
+// Handles new user signup and validation
 export async function POST(req) {
   try {
     const body = await req.json();
     let { email, username } = body || {};
 
-    // normalize
-    email = String(email || "")
-      .trim()
-      .toLowerCase();
-    username = String(username || "")
-      .trim()
-      .toLowerCase();
+    // Clean up user input
+    email = String(email || "").trim().toLowerCase();
+    username = String(username || "").trim().toLowerCase();
 
-    // validate
+    // Check if email and username are valid
     if (!validateEmail(email)) {
       return new Response(
         JSON.stringify({ error: "Invalid email address" }),
@@ -38,8 +35,12 @@ export async function POST(req) {
       );
     }
 
-    // Check if email already exists
-    const existingEmail = await prisma.user.findUnique({ where: { email } });
+    // Make sure email and username aren't already taken
+    const [existingEmail, existingUsername] = await Promise.all([
+      prisma.user.findUnique({ where: { email } }),
+      prisma.user.findUnique({ where: { username } })
+    ]);
+
     if (existingEmail) {
       return new Response(
         JSON.stringify({ error: "Email already registered. Please log in instead." }),
@@ -50,8 +51,6 @@ export async function POST(req) {
       );
     }
 
-    // Check if username already taken
-    const existingUsername = await prisma.user.findUnique({ where: { username } });
     if (existingUsername) {
       return new Response(
         JSON.stringify({ error: "Username already taken. Please choose another." }),
@@ -62,12 +61,9 @@ export async function POST(req) {
       );
     }
 
-    // Create new user
-    const user = await prisma.user.create({
-      data: {
-        email,
-        username,
-      }
+    // Create the new user account
+    await prisma.user.create({
+      data: { email, username }
     });
 
     return new Response(JSON.stringify({ success: true }), {
@@ -75,6 +71,7 @@ export async function POST(req) {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
+    // Log error and return friendly message
     console.error("Signup error:", error);
     return new Response(
       JSON.stringify({ error: "Failed to create account. Please try again." }),
@@ -84,4 +81,4 @@ export async function POST(req) {
       }
     );
   }
-}   
+}

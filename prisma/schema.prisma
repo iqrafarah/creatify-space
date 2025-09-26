@@ -36,7 +36,8 @@ model Profile {
   id               String   @id @default(cuid())
   userId           String   @unique
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  isPublished        Boolean  @default(false)  
+  available        Boolean  @default(false)  
+  isPublished      Boolean  @default(false)  
   name             String?
   headline         String?
   shortDescription String?
@@ -76,9 +77,17 @@ model Skill {
 
 model Footer {
   id          String @id @default(cuid())
-  userId      String @unique // Make userId unique since it's a 1:1 relation
+  userId      String @unique 
   user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   title       String
   description String
   contactUrl  String
+}
+
+model RateLimit {
+  id        String   @id @default(cuid())
+  ip        String   
+  timestamp DateTime @default(now())
+
+  @@index([ip, timestamp])
 }

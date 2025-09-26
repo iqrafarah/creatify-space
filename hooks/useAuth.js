@@ -3,15 +3,17 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
+// Custom hook to check if the user is authenticated
 export default function useAuth() {
   const [user, setUser] = useState(null);
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);x
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     let isMounted = true;
     
+    // Check if the user has a valid session
     async function checkAuth() {
       try {
         const response = await fetch('/api/auth/session', {
@@ -22,6 +24,7 @@ export default function useAuth() {
           }
         });
         
+        // If not logged in, redirect to login page
         if (!response.ok) {
           if (isMounted) {
             setIsLoading(false);
@@ -30,6 +33,7 @@ export default function useAuth() {
           return;
         }
         
+        // If logged in, save user data and set authorized
         const userData = await response.json();
         
         if (isMounted) {
@@ -38,6 +42,7 @@ export default function useAuth() {
           setIsLoading(false);
         }
       } catch (error) {
+        // On error, redirect to login
         console.error('Auth check failed:', error);
         if (isMounted) {
           setIsLoading(false);

@@ -2,10 +2,11 @@ import { NextResponse } from 'next/server';
 import { verifySessionCookie } from '@/lib/session';
 import prisma from '@/lib/db'; 
 
+// Handles profile publish state toggle
 export async function POST(request) {
   try {
+    // Verify user is authenticated
     const userId = await verifySessionCookie();
-
     if (!userId) {
       return NextResponse.json(
         { error: "Unauthorized" },
@@ -33,6 +34,7 @@ export async function POST(request) {
       data: { isPublished: !profile.isPublished }
     });
 
+    // Return success with new state
     return NextResponse.json({ 
       isPublished: updatedProfile.isPublished,
       message: `Profile ${updatedProfile.isPublished ? 'published' : 'unpublished'} successfully`

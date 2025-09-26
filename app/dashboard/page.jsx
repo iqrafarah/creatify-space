@@ -1,4 +1,3 @@
-// pages/dashboard.jsx or components/Dashboard/DashboardPage.jsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -9,25 +8,21 @@ import useDashboardState from "@/hooks/useDashboardState";
 import Sidebar from "@/components/Sidebar";
 import { FormsSection } from "@/components/Dashboard/FormsSection";
 import { PreviewSection } from "@/components/Preview/PreviewSection";
+import {fetchProfile } from "@/lib/profileService"
 
-// Custom hook for profile management
+// Manages profile fetching and validation
 const useProfileManagement = (isAuthorized) => {
   const [profileLoading, setProfileLoading] = useState(true);
   const [hasProfile, setHasProfile] = useState(false);
   const router = useRouter();
 
+  // Fetch profile data when authorized
   useEffect(() => {
     if (!isAuthorized) return;
 
-    const fetchProfile = async () => {
+    const fetchProfileData = async () => {
       try {
-        const response = await fetch("/api/profile");
-        if (!response.ok) {
-          setHasProfile(false);
-          return;
-        }
-        
-        const data = await response.json();
+        const data = await fetchProfile();
         setHasProfile(data.hasProfile);
       } catch (error) {
         console.error("Error fetching profile:", error);
@@ -37,9 +32,10 @@ const useProfileManagement = (isAuthorized) => {
       }
     };
 
-    fetchProfile();
+    fetchProfileData();
   }, [isAuthorized]);
 
+  // Redirect to onboarding if no profile exists
   useEffect(() => {
     if (!profileLoading && !hasProfile && isAuthorized) {
       router.push("/onboarding");
@@ -49,6 +45,7 @@ const useProfileManagement = (isAuthorized) => {
   return { profileLoading, hasProfile };
 };
 
+// Main Dashboard Component
 export default function DashboardPage() {
   const { isAuthorized, isLoading: authLoading } = useAuth();
   const { profileLoading, hasProfile } = useProfileManagement(isAuthorized);
@@ -59,18 +56,8 @@ export default function DashboardPage() {
     updateSection 
   } = useDashboardState();
 
-  const isLoading = authLoading || profileLoading;
-
-  console.log("Form Data:", formData);
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
-
-  if (!isAuthorized || !hasProfile) {
-    return null;
-  }
-
-    const handleColorChange = (updatedColors) => {
+  // Handle theme color changes
+  const handleColorChange = (updatedColors) => {
     setBackgroundColor(updatedColors.background);
     setHeadingsColor(updatedColors.headings);
     setPositionColor(updatedColors.position);
@@ -79,13 +66,17 @@ export default function DashboardPage() {
     setButtonsColor(updatedColors.buttons);
   };
 
+  // Loading and authorization checks
+  const isLoading = authLoading || profileLoading;
+  if (isLoading) return <LoadingSpinner />;
+  if (!isAuthorized || !hasProfile) return null;
+
   return (
     <DashboardLayout>
       <FormsSection 
         formData={formData} 
         updateSection={updateSection} 
       />
-      
       <PreviewSection 
         formData={formData} 
         handleColorChange={handleColorChange}
@@ -96,11 +87,10 @@ export default function DashboardPage() {
   );
 }
 
-// Layout component for better organization
+// Layout wrapper for dashboard structure
 const DashboardLayout = ({ children }) => (
   <div className="flex flex-col lg:flex-row h-screen bg-[var(--lightGray)] overflow-auto lg:overflow-hidden overflow-x-hidden">
     <Sidebar />
-    
     <div className="bg-white w-full flex flex-col lg:flex-row flex-wrap p-4 sm:px-6 py-8 border-l border-[#e7e5e4] overflow-scroll">
       <div className="flex flex-col lg:flex-row gap-6 h-full w-full">
         {children}

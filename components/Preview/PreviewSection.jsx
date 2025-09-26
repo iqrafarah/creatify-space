@@ -1,4 +1,3 @@
-// components/Preview/PreviewSection.jsx
 import React from 'react';
 import { PreviewControls } from './PreviewControls';
 import { PreviewContent } from './PreviewContent';

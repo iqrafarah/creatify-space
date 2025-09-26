@@ -1,4 +1,3 @@
-// components/Dashboard/Hero.jsx
 import React, { useEffect, useState, useCallback } from "react";
 import { fetchProfile, updateProfile } from "@/lib/profileService";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -8,14 +7,17 @@ import { FormField } from "@/components/Forms/FormField";
 import { ActionButtons } from "@/components/Forms/ActionButtons";
 import { NotificationList } from "@/components/Notifications/NotificationList";
 import LoadingForm from "@/components/Forms/LoadingForm";
+import { Switch } from "@/components/Forms/Switch";
 
+// Handles hero/profile section data management and updates
 export default function Hero({ heroDataChange, profile }) {
   const [profileImage, setProfileImage] = useState("/placeholder-profile.png");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [hasLoaded, setHasLoaded] = useState(false); 
+  const [hasLoaded, setHasLoaded] = useState(false);
   const { notifications, addNotification } = useNotifications();
 
+  // Form state management
   const {
     formData,
     isChanged,
@@ -27,14 +29,15 @@ export default function Hero({ heroDataChange, profile }) {
     name: "",
     position: "",
     description: "",
+    available: false,
   });
 
-  // Memoize heroDataChange to prevent unnecessary re-renders
+  // Memoize callback to avoid unnecessary re-renders
   const stableHeroDataChange = useCallback(heroDataChange, []);
 
-  // Load profile data - ONLY ONCE
+  // Load profile data on mount
   useEffect(() => {
-    if (hasLoaded) return; // Prevent multiple loads
+    if (hasLoaded) return;
 
     const loadProfile = async () => {
       try {
@@ -46,6 +49,7 @@ export default function Hero({ heroDataChange, profile }) {
             position: profile.headline || "",
             description: profile.shortDescription || "",
             image: profile.imageUrl || "/logo.svg",
+            available: profile.available || false,
           };
         } else {
           const response = await fetchProfile();
@@ -56,13 +60,15 @@ export default function Hero({ heroDataChange, profile }) {
               position: p.headline || "",
               description: p.shortDescription || "",
               image: p.imageUrl || "/logo.svg",
+              available: p.available || false,
             };
           } else {
             profileData = {
               name: "",
               position: "",
               description: "",
-              image: "/placeholder-profile.png",
+              image: "/logo.svg",
+              available: false,
             };
           }
         }
@@ -70,7 +76,7 @@ export default function Hero({ heroDataChange, profile }) {
         setFormData(profileData);
         setProfileImage(profileData.image);
         saveChanges(profileData);
-        setHasLoaded(true); // Mark as loaded
+        setHasLoaded(true);
       } catch (error) {
         console.error("Error loading profile:", error);
         addNotification("Failed to load profile data");
@@ -82,27 +88,36 @@ export default function Hero({ heroDataChange, profile }) {
     loadProfile();
   }, [profile, hasLoaded, setFormData, saveChanges, addNotification]);
 
-  // Send updates to parent - but only after loading is complete
+  // Notify parent when data is loaded and not changed
   useEffect(() => {
     if (!isLoading && hasLoaded && stableHeroDataChange) {
       stableHeroDataChange({
         title: formData.name,
-        position: formData.position, 
+        position: formData.position,
         description: formData.description,
-        image: profileImage
+        image: profileImage,
+        available: formData.available || false,
       });
     }
   }, [formData, profileImage, isLoading, hasLoaded, stableHeroDataChange]);
 
+  // Handle input changes
   const handleInputChange = (e) => {
     updateField(e.target.name, e.target.value);
   };
 
+  // Handle profile image changes
   const handleImageChange = (newImage) => {
     setProfileImage(newImage);
     updateField("image", newImage);
   };
 
+  // Handle availability switch
+  const handleAvailabilityChange = (checked) => {
+    updateField("available", checked);
+  };
+
+  // Save profile data
   const handleSave = async (e) => {
     e.preventDefault();
     setIsSaving(true);
@@ -112,6 +127,7 @@ export default function Hero({ heroDataChange, profile }) {
       headline: formData.position,
       shortDescription: formData.description,
       imageUrl: profileImage,
+      available: formData.available,
     };
 
     try {
@@ -134,17 +150,13 @@ export default function Hero({ heroDataChange, profile }) {
     }
   };
 
+  // Cancel and reset changes
   const handleCancel = (e) => {
     e.preventDefault();
-    
-    // Get the original saved data
     const originalData = resetChanges();
-    
-    // Reset the profile image to the saved version
     const savedImage = originalData.image || "/logo.svg";
     setProfileImage(savedImage);
-    
-    // Update parent with the reset data
+
     if (stableHeroDataChange) {
       stableHeroDataChange({
         title: originalData.name,
@@ -193,6 +205,20 @@ export default function Hero({ heroDataChange, profile }) {
           multiline
           rows={6}
         />
+
+        <div className="flex items-center justify-between py-4 ">
+          <div className="space-y-0.5">
+            <label className="text-sm font-medium">Available for Work</label>
+            <p className="text-xs text-gray-400">
+              Show others you're open to new opportunities
+            </p>
+          </div>
+          <Switch
+            checked={Boolean(formData.available)}
+            onCheckedChange={handleAvailabilityChange}
+            className="data-[state=checked]: bg-[var(--primary)]"
+          />
+        </div>
 
         {isChanged && (
           <ActionButtons

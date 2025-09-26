@@ -1,9 +1,8 @@
-// /app/api/skills/route.js
 import { NextResponse } from "next/server";
 import { verifySessionCookie } from "@/lib/session";
 import prisma from "@/lib/db";
 
-// GET: Fetch all skills for the current user
+// Fetch all skills for the current user
 export async function GET() {
   try {
     const userId = await verifySessionCookie();
@@ -11,6 +10,7 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Get skills sorted by ID
     const skills = await prisma.skill.findMany({
       where: { userId },
       orderBy: { id: "asc" },
@@ -23,7 +23,7 @@ export async function GET() {
   }
 }
 
-// POST: Add a new skill for the current user
+// Add a new skill for the current user
 export async function POST(request) {
   try {
     const userId = await verifySessionCookie();
@@ -31,6 +31,7 @@ export async function POST(request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Validate and clean input
     const data = await request.json();
     const name = (data.name || "").trim();
 
@@ -38,6 +39,7 @@ export async function POST(request) {
       return NextResponse.json({ error: "Skill name is required" }, { status: 400 });
     }
 
+    // Create new skill with order
     const newSkill = await prisma.skill.create({
       data: { userId, name, order: parseInt(data.order, 10) || 0 },
     });
@@ -49,7 +51,7 @@ export async function POST(request) {
   }
 }
 
-// PUT: Update an existing skill
+// Update an existing skill
 export async function PUT(request) {
   try {
     const userId = await verifySessionCookie();
@@ -57,18 +59,20 @@ export async function PUT(request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Validate input
     const data = await request.json();
     if (!data.id) {
       return NextResponse.json({ error: "Skill ID is required" }, { status: 400 });
     }
 
+    // Check ownership
     const skill = await prisma.skill.findUnique({ where: { id: data.id } });
     if (!skill || skill.userId !== userId) {
       return NextResponse.json({ error: "Skill not found or unauthorized" }, { status: 404 });
     }
 
+    // Update skill name
     const name = (data.name ?? skill.name).trim();
-
     const updatedSkill = await prisma.skill.update({
       where: { id: data.id },
       data: { name },
@@ -81,7 +85,7 @@ export async function PUT(request) {
   }
 }
 
-// DELETE: Remove a skill by ID
+// Delete a skill by ID
 export async function DELETE(request) {
   try {
     const userId = await verifySessionCookie();
@@ -89,16 +93,19 @@ export async function DELETE(request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Validate input
     const { id } = await request.json();
     if (!id) {
       return NextResponse.json({ error: "Skill ID is required" }, { status: 400 });
     }
 
+    // Check ownership before deletion
     const skill = await prisma.skill.findUnique({ where: { id } });
     if (!skill || skill.userId !== userId) {
       return NextResponse.json({ error: "Skill not found or unauthorized" }, { status: 404 });
     }
 
+    // Delete the skill
     await prisma.skill.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch (error) {

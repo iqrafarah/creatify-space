@@ -2,50 +2,40 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/db";
 import { createSessionCookie } from "@/lib/session";
 
+// Handles magic link verification and user login
 export async function GET(request) {
   try {
-    // Get token from URL
+    // Get token from magic link URL
     const { searchParams } = new URL(request.url);
     const token = searchParams.get("token");
-    
-    console.log("Verifying token:", token);
     
     if (!token) {
       console.log("No token provided");
       return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/login?error=invalid-token`);
     }
     
-    // Find token in database
+    // Look up token and associated user in database
     const verificationToken = await prisma.verificationToken.findUnique({
       where: { token },
       include: { user: true },
     });
     
-    console.log("Token found:", !!verificationToken);
-    
-    // Rest of your code...
-    // Check if token exists and is valid
     if (!verificationToken) {
       return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/login?error=invalid-token`);
     }
     
-    // Check if token is expired
+    // Check if magic link has expired
     if (new Date() > verificationToken.expiresAt) {
-      // Delete expired token
       await prisma.verificationToken.delete({ where: { id: verificationToken.id } });
       return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/login?error=expired-token`);
     }
     
-    // Token is valid, set session cookie using your implementation
+    // Create session for valid login
     const cookie = createSessionCookie(verificationToken.userId);
-    
-    // Create response for redirect
     const response = NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/dashboard`);
-    
-    // Set cookie on response
     response.cookies.set(cookie.name, cookie.value, cookie.options);
     
-    // Delete used token (one-time use)
+    // Remove used token for security
     await prisma.verificationToken.delete({ where: { id: verificationToken.id } });
     
     return response;

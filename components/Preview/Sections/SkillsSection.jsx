@@ -11,7 +11,6 @@ export const SkillsSection = ({
   className = "flex flex-col gap-6 my-8 items-start pb-12 border-[var(--grey)]"
 }) => {
   
-  // Handle different possible data formats
   let skillsArray;
   
   if (Array.isArray(data)) {

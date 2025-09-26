@@ -1,4 +1,3 @@
-// components/Forms/NotificationList.jsx
 import React from 'react';
 import Notification from "@/components/Notifications/Toast";
 

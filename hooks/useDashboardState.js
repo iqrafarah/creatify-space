@@ -1,16 +1,15 @@
-// hooks/useDashboardState.js
 import { useState } from 'react';
 
 const initialFormData = {
   hero: { title: "", position: "", description: "", image: "" },
   about: { about: "" },
   experiences: [],
-   skills: { skills: [] },
+  skills: { skills: [] },
   footer: { title: "", description: "", email: "" }
 };
 
 export const useDashboardState = () => {
-  const [formData, setFormData] = useState(initialFormData);
+  const [formData, setFormData] = useState(initialFormData); 
   const [isMobilePreview, setIsMobilePreview] = useState(false);
 
   const updateSection = (section, data) => {
@@ -47,4 +46,5 @@ export const useDashboardState = () => {
     resetAllSections
   };
 };
+
 export default useDashboardState;

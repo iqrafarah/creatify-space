@@ -1,4 +1,3 @@
-// components/Preview/sections/AboutSection.jsx
 import React from "react";
 import Image from "next/image";
 
@@ -10,7 +9,7 @@ export const AboutSection = ({
   if (!data?.about) return null;
 
   return (
-    <div className="grid grid-cols-1 items-center gap-10 py-10 md:py-30">
+    <div className="grid grid-cols-1 items-center gap-10 py-10 md:py-20">
       <div>
         <h2
           className="text-xl sm:text-2xl font-semibold"

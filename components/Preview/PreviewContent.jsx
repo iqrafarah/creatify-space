@@ -1,4 +1,3 @@
-// components/Preview/PreviewContent.jsx
 import React from 'react';
 import { useState } from 'react';
 import { HeroSection } from './sections/HeroSection';

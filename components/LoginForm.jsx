@@ -5,7 +5,9 @@ import { validateEmail } from "@/lib/validators";
 import Link from "next/link";
 import Toast from "./Notifications/Toast";
 import Image from "next/image";
+import { loginWithEmail } from "@/lib/authService";
 
+// Login form component for magic link authentication
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
@@ -22,37 +24,23 @@ export default function LoginForm() {
     setError("");
     setIsSubmitting(true);
 
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
+    // Call login API via helper function
+    const result = await loginWithEmail(email);
 
-      if (!response.ok) {
-        const { error } = await response
-          .json()
-          .catch(() => ({
-            error: "Failed to send magic link. Please try again.",
-          }));
-        setError(error || "Failed to send magic link. Please try again.");
-        return;
-      }
-
-      setShowNotification(true);
-
-    } catch (error) {
-      setError("Something went wrong. Please try again.");
-    } finally {
+    if (!result.success) {
+      setError(result.error);
       setIsSubmitting(false);
+      return;
     }
+
+    setShowNotification(true);
+    setIsSubmitting(false);
   }
 
   const isButtonDisabled = isSubmitting || !email.trim();
 
   return (
     <div className="h-screen flex items-center">
-
       {showNotification && (
         <Toast 
           id="magic-link-sent" 
@@ -103,6 +91,7 @@ export default function LoginForm() {
           )}
         </button>
 
+        {/* Link to signup page */}
         <p className="text-sm mt-2">
           Don't have an account?{" "}
           <Link
@@ -113,6 +102,7 @@ export default function LoginForm() {
           </Link>
         </p>
         {/* 
+        // Social login section (commented out)
         <div className="w-full flex items-center my-4">
           <div className="flex-grow border-t border-gray-300"></div>
           <span className="px-3 text-sm text-gray-500">or continue with</span>

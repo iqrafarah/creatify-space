@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
 import prisma from "@/lib/db";
 
+// Fetch user data and their profile information by username
 export async function GET(request, { params }) {
   try {
     const { username } = params;
     
+    // Validate username parameter
     if (!username) {
       return NextResponse.json({ error: 'Username is required' }, { 
         status: 400,
@@ -14,6 +16,7 @@ export async function GET(request, { params }) {
       });
     }
 
+    // Get user data with related profile sections
     const userData = await prisma.user.findUnique({
       where: { username },
       include: {
@@ -28,6 +31,7 @@ export async function GET(request, { params }) {
       },
     });
 
+    // Check if user exists
     if (!userData) {
       return NextResponse.json({ error: 'User not found' }, { 
         status: 404,
@@ -37,6 +41,7 @@ export async function GET(request, { params }) {
       });
     }
 
+    // Return complete user profile data
     return NextResponse.json(userData, {
       headers: {
         'Content-Type': 'application/json',

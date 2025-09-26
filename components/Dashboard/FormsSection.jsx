@@ -29,7 +29,6 @@ export const FormsSection = ({
           <Skills 
             skillsDataChange={(data) => {
               console.log("Skills data being sent to dashboard state:", data);
-              // Wrap skill names in the expected format
               updateSection('skills', { skills: data });
             }} 
             skills={formData.skills?.skills || formData.skills || []}

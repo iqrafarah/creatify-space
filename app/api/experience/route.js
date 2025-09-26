@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { verifySessionCookie } from '@/lib/session';
 import prisma from "@/lib/db";
 
+// Get all experiences for the logged-in user
 export async function GET() {
   try {
     const userId = await verifySessionCookie();
@@ -10,6 +11,7 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Get experiences sorted by their order
     const experiences = await prisma.experience.findMany({
       where: { userId },
       orderBy: { order: "asc" },
@@ -32,7 +34,7 @@ export async function GET() {
   }
 }
 
-
+// Update an existing experience
 export async function PUT(request) {
   try {
     const userId = await verifySessionCookie();
@@ -42,7 +44,7 @@ export async function PUT(request) {
 
     const data = await request.json();
     
-    // If updating a specific experience
+    // Make sure experience exists and belongs to user
     if (data.id) {
       const experience = await prisma.experience.findUnique({
         where: { id: data.id }
@@ -60,7 +62,6 @@ export async function PUT(request) {
           duration: data.duration,
           logo: data.logo,
           order: data.order
-          
         }
       });
       
@@ -72,6 +73,7 @@ export async function PUT(request) {
   }
 }
 
+// Delete an experience entry
 export async function DELETE(request) {
   try {
     const userId = await verifySessionCookie();
@@ -85,7 +87,7 @@ export async function DELETE(request) {
       return NextResponse.json({ error: "Experience ID is required" }, { status: 400 });
     }
 
-    // Check if the experience belongs to the user
+    // Verify ownership before deleting
     const experience = await prisma.experience.findUnique({
       where: { id }
     });
@@ -94,7 +96,6 @@ export async function DELETE(request) {
       return NextResponse.json({ error: "Experience not found or unauthorized" }, { status: 404 });
     }
 
-    // Delete the experience
     await prisma.experience.delete({
       where: { id }
     });
@@ -106,6 +107,7 @@ export async function DELETE(request) {
   }
 }
 
+// Add a new experience entry
 export async function POST(request) {
   try {
     const userId = await verifySessionCookie();
@@ -115,7 +117,7 @@ export async function POST(request) {
 
     const data = await request.json();
     
-    // Create a new experience
+    // Create with default values for optional fields
     const newExperience = await prisma.experience.create({
       data: {
         userId,

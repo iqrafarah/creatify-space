@@ -1,4 +1,3 @@
-// components/Dashboard/Experience.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import ExperienceForm from "./ExperienceForm";
 import Image from "next/image";
@@ -12,6 +11,7 @@ import {
   deleteExperience 
 } from "@/lib/experienceService";
 
+// Manages experience section CRUD and state
 export default function Experience({ onUpdate }) {
   const [experiences, setExperiences] = useState([]);
   const [editingIndices, setEditingIndices] = useState(new Set());
@@ -19,10 +19,10 @@ export default function Experience({ onUpdate }) {
   const [hasLoaded, setHasLoaded] = useState(false);
   const { notifications, addNotification } = useNotifications();
 
-  // Memoize onUpdate to prevent unnecessary re-renders
+  // Memoize onUpdate to avoid unnecessary re-renders
   const stableOnUpdate = useCallback(onUpdate, []);
 
-  // Load experiences - ONLY ONCE
+  // Load experiences once on mount
   useEffect(() => {
     if (hasLoaded) return;
 
@@ -49,21 +49,21 @@ export default function Experience({ onUpdate }) {
     loadExperiences();
   }, [hasLoaded, addNotification]);
 
-  // Update parent component when experiences change
+  // Notify parent when experiences change
   useEffect(() => {
     if (!isLoading && hasLoaded && stableOnUpdate) {
       stableOnUpdate(experiences);
     }
   }, [experiences, isLoading, hasLoaded, stableOnUpdate]);
 
+  // Add new experience
   const addExperience = async (newExperience) => {
     try {
       const response = await createExperience(newExperience);
       if (response.success) {
         addNotification("Experience saved successfully🎉");
-        const updatedExperiences = [...experiences, response.experience];
-        setExperiences(updatedExperiences);
-        toggleEdit(-1); // Close the add form
+        setExperiences([...experiences, response.experience]);
+        toggleEdit(-1); // Close add form
       } else {
         addNotification(`Failed to add experience: ${response.error}`);
       }
@@ -73,13 +73,13 @@ export default function Experience({ onUpdate }) {
     }
   };
 
+  // Delete experience by id
   const handleDeleteExperience = async (id) => {
     try {
       const response = await deleteExperience(id);
       if (response.success) {
         addNotification("Experience deleted successfully🚀");
-        const updatedExperiences = experiences.filter((exp) => exp.id !== id);
-        setExperiences(updatedExperiences);
+        setExperiences(experiences.filter((exp) => exp.id !== id));
       } else {
         addNotification(`Failed to delete experience: ${response.error}`);
       }
@@ -89,6 +89,7 @@ export default function Experience({ onUpdate }) {
     }
   };
 
+  // Update experience at given index
   const handleUpdateExperience = async (updatedExperience, index) => {
     try {
       const experienceWithId = {
@@ -98,11 +99,10 @@ export default function Experience({ onUpdate }) {
       const response = await updateExperience(experienceWithId);
       if (response.success) {
         addNotification("Experience updated successfully🚀");
-        const updatedExperiences = experiences.map((exp, idx) =>
+        setExperiences(experiences.map((exp, idx) =>
           idx === index ? response.experience : exp
-        );
-        setExperiences(updatedExperiences);
-        toggleEdit(index); // Close the edit form
+        ));
+        toggleEdit(index); // Close edit form
       } else {
         addNotification(`Failed to update experience: ${response.error}`);
       }
@@ -112,6 +112,7 @@ export default function Experience({ onUpdate }) {
     }
   };
 
+  // Toggle edit mode for a given index
   const toggleEdit = (index) => {
     const newEditingIndices = new Set(editingIndices);
     if (newEditingIndices.has(index)) {
@@ -131,6 +132,7 @@ export default function Experience({ onUpdate }) {
       <div className="flex flex-col gap-2 transition-all mt-5">
         <p className="text-muted text-md sm:text-sm">Experiences</p>
         
+        {/* Render each experience, either as a card or editable form */}
         {experiences.map((exp, index) =>
           editingIndices.has(index) ? (
             <ExperienceForm
@@ -149,6 +151,7 @@ export default function Experience({ onUpdate }) {
           )
         )}
 
+        {/* Add new experience form */}
         {editingIndices.has(-1) && (
           <ExperienceForm
             key="add-new"
@@ -159,6 +162,7 @@ export default function Experience({ onUpdate }) {
           />
         )}
 
+        {/* Add button */}
         <button
           onClick={() => toggleEdit(-1)}
           disabled={editingIndices.has(-1)}
@@ -173,7 +177,7 @@ export default function Experience({ onUpdate }) {
   );
 }
 
-// Extracted component for better organization
+// Card for displaying a single experience
 const ExperienceCard = ({ experience, onClick }) => (
   <div
     className="rounded-lg border border-[var(--input)] bg-card text-card-foreground shadow hover:bg-[#f5f5f5] cursor-pointer transition-all w-full"

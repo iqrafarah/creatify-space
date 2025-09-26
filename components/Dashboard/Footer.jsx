@@ -1,4 +1,3 @@
-// components/Dashboard/Footer.jsx
 import React, { useEffect, useState, useCallback } from "react";
 import { fetchFooter, updateFooter } from "@/lib/footerService";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -8,12 +7,14 @@ import { ActionButtons } from "@/components/Forms/ActionButtons";
 import { NotificationList } from "@/components/Notifications/NotificationList";
 import LoadingForm from "@/components/Forms/LoadingForm";
 
+// Handles footer section data management and updates
 export default function Footer({ footerDataChange, initialData }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [hasLoaded, setHasLoaded] = useState(false); 
   const { notifications, addNotification } = useNotifications();
 
+  // Form state management
   const {
     formData,
     isChanged,
@@ -24,15 +25,15 @@ export default function Footer({ footerDataChange, initialData }) {
   } = useFormWithChangeDetection({
     title: "",
     description: "",
-    contactUrl: "",  // Using contactUrl field from schema
+    contactUrl: "",
   });
 
-  // Memoize footerDataChange to prevent unnecessary re-renders
+  // Memoize callback to avoid unnecessary re-renders
   const stableFooterDataChange = useCallback(footerDataChange, []);
 
-  // Load footer data - ONLY ONCE
+  // Load footer data on mount
   useEffect(() => {
-    if (hasLoaded) return; // Prevent multiple loads
+    if (hasLoaded) return;
 
     const loadFooter = async () => {
       setIsLoading(true);
@@ -65,7 +66,7 @@ export default function Footer({ footerDataChange, initialData }) {
 
         setFormData(footerData);
         saveChanges(footerData);
-        setHasLoaded(true); // Mark as loaded
+        setHasLoaded(true);
       } catch (error) {
         console.error("Error loading footer data:", error);
         addNotification("Failed to load footer data");
@@ -77,7 +78,7 @@ export default function Footer({ footerDataChange, initialData }) {
     loadFooter();
   }, [initialData, hasLoaded, setFormData, saveChanges, addNotification]);
 
-  // Send updates to parent - but only after loading is complete
+  // Notify parent when data is loaded and not changed
   useEffect(() => {
     if (!isLoading && hasLoaded && stableFooterDataChange && !isChanged) {
       stableFooterDataChange({
@@ -88,6 +89,7 @@ export default function Footer({ footerDataChange, initialData }) {
     }
   }, [formData, isLoading, hasLoaded, stableFooterDataChange, isChanged]);
 
+  // Memoized function to notify parent of changes
   const notifyParentOfChanges = useCallback(() => {
     if (stableFooterDataChange) {
       stableFooterDataChange({
@@ -98,10 +100,12 @@ export default function Footer({ footerDataChange, initialData }) {
     }
   }, [formData, stableFooterDataChange]);
 
+  // Handle input changes
   const handleInputChange = (e) => {
     updateField(e.target.name, e.target.value);
   };
 
+  // Save footer data
   const handleSave = async (e) => {
     if (e?.preventDefault) e.preventDefault();
     if (isSaving) return;
@@ -132,14 +136,11 @@ export default function Footer({ footerDataChange, initialData }) {
     }
   };
 
+  // Cancel and reset changes
   const handleCancel = (e) => {
     if (e?.preventDefault) e.preventDefault();
-    
-    // Get the original saved data
     const originalData = resetChanges();
     setFormData(originalData);
-    
-    // Update parent with the reset data
     if (stableFooterDataChange) {
       stableFooterDataChange({
         title: originalData.title,
@@ -174,7 +175,7 @@ export default function Footer({ footerDataChange, initialData }) {
 
         <FormField
           label="Email to contact"
-          name="contactUrl"  // Using contactUrl field for email
+          name="contactUrl"
           placeholder="example@example.com"
           value={formData.contactUrl}
           onChange={handleInputChange}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Toast from "@/components/Notifications/Toast";
 
-const CopyButton = ({ textToCopy }) => {
+const CopyButton = ({ textToCopy, isPublished }) => {
   const [notifications, setNotifications] = useState([]);
 
   const handleCopy = async () => {
@@ -33,7 +33,8 @@ const CopyButton = ({ textToCopy }) => {
           className="flex flex-row items-center text-sm gap-2 justify-center bg-white w-full font-medium px-4 py-2 rounded-md shadow-sm border border-[#e7e5e4] hover:bg-[#f5f5f5] max-w-xs overflow-hidden whitespace-nowrap text-ellipsis"
           onClick={handleCopy}
         >
-          {textToCopy}
+          <div className={isPublished ? "dot" : "dot-off"}></div>
+          <p className="ml-2">{textToCopy}</p>
           <svg
             width="15"
             height="15"

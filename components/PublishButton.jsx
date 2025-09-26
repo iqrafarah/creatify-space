@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { togglePublish } from "@/lib/publishService";
+import { useRouter } from "next/navigation";
 
-const PublishButton = ({ initialPublishState, onPublishToggle }) => {
+const PublishButton = ({ initialPublishState, onPublishToggle, username }) => {
   const [isPublished, setIsPublished] = useState(initialPublishState);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleClick = async () => {
     try {
@@ -11,6 +13,10 @@ const PublishButton = ({ initialPublishState, onPublishToggle }) => {
       const data = await togglePublish(isPublished);
       setIsPublished(data.isPublished);
       onPublishToggle?.(data.isPublished);
+
+      if (data.isPublished) {
+        window.open(`http://localhost:3000/${username}`, "_blank");
+      }
     } catch (error) {
       console.error("Error:", error);
     } finally {

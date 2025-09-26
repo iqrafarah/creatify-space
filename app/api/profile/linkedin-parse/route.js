@@ -3,47 +3,39 @@ import prisma from "@/lib/db";
 import { verifySessionCookie } from "@/lib/session";
 import { mapLinkedInTextToEntities } from "@/lib/linkedin-map";
 
+// Fetch full profile data for the current user
 export async function GET() {
   try {
-    // Verify the user is authenticated
+    // Check authentication
     const userId = await verifySessionCookie();
-    
     if (!userId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     
-    // Check if user has a profile
+    // Get user's profile and related data
     const profile = await prisma.profile.findUnique({
       where: { userId },
       include: {
         user: {
-          select: {
-            username: true,
-            email: true
-          }
+          select: { username: true, email: true }
         }
       }
     });
     
-    // Get user's experiences (if any)
-    const experiences = await prisma.experience.findMany({
-      where: { userId },
-      orderBy: { order: 'asc' }
-    });
-    
-    // Get user's skills (if any)
-    const skills = await prisma.skill.findMany({
-      where: { userId },
-      orderBy: { order: 'asc' }
-    });
-    
-    // Get user's footer (if any)
-    const footer = await prisma.footer.findUnique({
-      where: { userId }
-    });
+    // Get additional profile sections
+    const [experiences, skills, footer] = await Promise.all([
+      prisma.experience.findMany({
+        where: { userId },
+        orderBy: { order: 'asc' }
+      }),
+      prisma.skill.findMany({
+        where: { userId },
+        orderBy: { order: 'asc' }
+      }),
+      prisma.footer.findUnique({
+        where: { userId }
+      })
+    ]);
     
     if (!profile) {
       return NextResponse.json({ 
@@ -52,7 +44,7 @@ export async function GET() {
       });
     }
     
-    // Return the profile data
+    // Return complete profile data
     return NextResponse.json({
       hasProfile: true,
       profile: {
@@ -66,45 +58,35 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Profile fetch error:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch profile" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch profile" }, { status: 500 });
   }
 }
 
+// Parse LinkedIn data and update profile
 export async function POST(req) {
   try {
-    // Verify the user is authenticated
     const userId = await verifySessionCookie();
-    
     if (!userId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Validate input
     const { text } = await req.json();
-    
     if (!text || typeof text !== 'string') {
-      return NextResponse.json(
-        { error: "No text provided" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "No text provided" }, { status: 400 });
     }
 
-    // Map the LinkedIn text to structured data
+    // Convert LinkedIn text to structured data
     const linkedInData = mapLinkedInTextToEntities(text);
 
-    // Create or update the profile
+    // Update or create profile with LinkedIn data
     const profile = await prisma.profile.upsert({
       where: { userId },
       update: {
         name: linkedInData.profile.name || "",
         headline: linkedInData.profile.headline || "",
-        shortDescription:  "lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad", // Map about to shortDescription field
-        summary: linkedInData.profile.about || "", // Map about to summary field
+        shortDescription: "lorem ipsum dolor sit amet...", 
+        summary: linkedInData.profile.about || "",
         available: linkedInData.profile.available,
         updatedAt: new Date()
       },
@@ -112,19 +94,15 @@ export async function POST(req) {
         userId,
         name: linkedInData.profile.name || "",
         headline: linkedInData.profile.headline || "",
-        shortDescription:  "lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad", // Map about to shortDescription field
-        summary: linkedInData.profile.about || "", // Map about to summary field
+        shortDescription: "lorem ipsum dolor sit amet...",
+        summary: linkedInData.profile.about || "",
         available: linkedInData.profile.available,
       }
     });
 
-    // Delete existing experiences
-    await prisma.experience.deleteMany({
-      where: { userId }
-    });
-
-    // Create new experiences
-    if (linkedInData.experiences && linkedInData.experiences.length > 0) {
+    // Replace experiences with LinkedIn data
+    await prisma.experience.deleteMany({ where: { userId } });
+    if (linkedInData.experiences?.length) {
       await prisma.experience.createMany({
         data: linkedInData.experiences.map((exp, index) => ({
           userId,
@@ -136,13 +114,9 @@ export async function POST(req) {
       });
     }
 
-    // Delete existing skills
-    await prisma.skill.deleteMany({
-      where: { userId }
-    });
-
-    // Create new skills
-    if (linkedInData.skills && linkedInData.skills.length > 0) {
+    // Replace skills with LinkedIn data
+    await prisma.skill.deleteMany({ where: { userId } });
+    if (linkedInData.skills?.length) {
       await prisma.skill.createMany({
         data: linkedInData.skills.map((skill, index) => ({
           userId,
@@ -152,18 +126,14 @@ export async function POST(req) {
       });
     }
 
-    // Create or update footer with example content
-    const existingFooter = await prisma.footer.findUnique({
-      where: { userId }
-    });
-
+    // Create default footer if none exists
+    const existingFooter = await prisma.footer.findUnique({ where: { userId } });
     if (!existingFooter) {
-      // Create example footer only if one doesn't exist yet
       await prisma.footer.create({
         data: {
           userId,
           title: "Let's Connect!",
-          description: "I'm always open to discussing new projects, creative ideas or opportunities to be part of your vision.",
+          description: "I'm always open to discussing new projects...",
           contactUrl: linkedInData.profile.email || "hello@example.com",
           cvUrl: "https://example.com/resume.pdf"
         }

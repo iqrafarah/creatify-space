@@ -1,4 +1,3 @@
-// components/Preview/sections/ExperienceSection.jsx
 import React from "react";
 import Image from "next/image";
 

@@ -5,6 +5,7 @@ import { validateEmail, validateUsername } from "@/lib/validators";
 import Link from "next/link";
 import Image from "next/image";
 import Toast from "./Notifications/Toast";
+import { signupWithEmail } from "@/lib/authService";
 
 export default function SignupForm() {
   const [email, setEmail] = useState("");
@@ -14,6 +15,7 @@ export default function SignupForm() {
   const [showNotification, setShowNotification] = useState(false);
   const router = useRouter();
 
+  // Handle form submission
   async function handleSubmit(event) {
     event.preventDefault();
 
@@ -27,31 +29,20 @@ export default function SignupForm() {
     setError("");
     setIsSubmitting(true);
 
-    try {
-      const response = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, username }),
-      });
+    const result = await signupWithEmail(email, username);
 
-      if (!response.ok) {
-        const { error } = await response.json().catch(() => ({
-          error: "Failed to create account. Please try again.",
-        }));
-        setError(error || "Failed to create account. Please try again.");
-        return;
-      }
-
-      setShowNotification(true);
-
-      setTimeout(() => {
-        router.push("/login");
-      }, 3000);
-    } catch (error) {
-      setError("Something went wrong. Please try again.");
-    } finally {
+    if (!result.success) {
+      setError(result.error);
       setIsSubmitting(false);
+      return;
     }
+
+    setShowNotification(true);
+    setTimeout(() => {
+      router.push("/login");
+    }, 3000);
+
+    setIsSubmitting(false);
   }
 
   return (

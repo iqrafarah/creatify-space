@@ -1,4 +1,3 @@
-// components/Preview/PreviewControls.jsx
 import React from 'react';
 
 const PreviewButton = ({ active, onClick, icon, ariaLabel }) => {

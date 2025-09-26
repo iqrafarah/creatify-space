@@ -38,7 +38,7 @@
 }
 
 .page {
-  overflow-y: auto;
+  overflow-y: auto !important;
 }
 
 .container {
@@ -85,6 +85,7 @@
   }
 }
 /* END DropDown Profile */
+
 .notification {
   position: fixed;
   bottom: 1rem;
@@ -132,21 +133,89 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background-color: #b0a3ff;
+  background-color: #4caf50; /* base green */
   -webkit-animation: glowing 1s ease-in-out infinite alternate;
   -moz-animation: glowing 1s ease-in-out infinite alternate;
   animation: glowing 1s ease-in-out infinite alternate;
 }
+
 @-webkit-keyframes glowing {
   from {
-    box-shadow: 0 0 5px #9080f5, 0 0 5px #9080f5, 0 0 5px #9080f5,
-      0 0 20px #9080f5;
+    box-shadow: 0 0 5px #43a047, 0 0 5px #43a047, 0 0 5px #43a047,
+      0 0 20px #43a047;
   }
   to {
-    box-shadow: 0 0 10px #9080f5, 0 0 10px #9080f5, 0 0 10px #9080f5,
-      0 0 10px #9080f5;
+    box-shadow: 0 0 10px #66bb6a, 0 0 10px #66bb6a, 0 0 10px #66bb6a,
+      0 0 10px #66bb6a;
   }
 }
+
+@-moz-keyframes glowing {
+  from {
+    box-shadow: 0 0 5px #43a047, 0 0 5px #43a047, 0 0 5px #43a047,
+      0 0 20px #43a047;
+  }
+  to {
+    box-shadow: 0 0 10px #66bb6a, 0 0 10px #66bb6a, 0 0 10px #66bb6a,
+      0 0 10px #66bb6a;
+  }
+}
+
+@keyframes glowing {
+  from {
+    box-shadow: 0 0 5px #43a047, 0 0 5px #43a047, 0 0 5px #43a047,
+      0 0 20px #43a047;
+  }
+  to {
+    box-shadow: 0 0 10px #66bb6a, 0 0 10px #66bb6a, 0 0 10px #66bb6a,
+      0 0 10px #66bb6a;
+  }
+}
+
+.dot-off {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #9e9e9e; /* base grey */
+  -webkit-animation: glowing-grey 1s ease-in-out infinite alternate;
+  -moz-animation: glowing-grey 1s ease-in-out infinite alternate;
+  animation: glowing-grey 1s ease-in-out infinite alternate;
+}
+
+@-webkit-keyframes glowing-grey {
+  from {
+    box-shadow: 0 0 5px #757575, 0 0 5px #757575, 0 0 5px #757575,
+      0 0 20px #757575;
+  }
+  to {
+    box-shadow: 0 0 10px #bdbdbd, 0 0 10px #bdbdbd, 0 0 10px #bdbdbd,
+      0 0 10px #bdbdbd;
+  }
+}
+
+@-moz-keyframes glowing-grey {
+  from {
+    box-shadow: 0 0 5px #757575, 0 0 5px #757575, 0 0 5px #757575,
+      0 0 20px #757575;
+  }
+  to {
+    box-shadow: 0 0 10px #bdbdbd, 0 0 10px #bdbdbd, 0 0 10px #bdbdbd,
+      0 0 10px #bdbdbd;
+  }
+}
+
+@keyframes glowing-grey {
+  from {
+    box-shadow: 0 0 5px #757575, 0 0 5px #757575, 0 0 5px #757575,
+      0 0 20px #757575;
+  }
+  to {
+    box-shadow: 0 0 10px #bdbdbd, 0 0 10px #bdbdbd, 0 0 10px #bdbdbd,
+      0 0 10px #bdbdbd;
+  }
+}
+
 
 @media screen and (max-width: 767px) {
   .mobile-menu {

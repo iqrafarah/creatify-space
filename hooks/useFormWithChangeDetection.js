@@ -1,4 +1,3 @@
-// hooks/useFormWithChangeDetection.js
 import { useState } from 'react';
 
 export const useFormWithChangeDetection = (initialData) => {

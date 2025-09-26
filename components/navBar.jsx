@@ -10,9 +10,10 @@ import CopyButton from "@/components/CopyButton";
 import PublishButton from "@/components/PublishButton";
 import { fetchProfile } from "@/lib/profileService";
 
-const NAV_HEIGHT = 64; // keep navbar height stable to prevent layout shift
+const NAV_HEIGHT = 64; 
 
 export default function NavBar({ hideContainer }) {
+  // Auth and profile state
   const { isAuthorized, isLoading: authLoading } = useAuth();
   const [openProfile, setOpenProfile] = useState(false);
   const [profile, setProfile] = useState(null);
@@ -22,38 +23,27 @@ export default function NavBar({ hideContainer }) {
 
   const pathname = usePathname();
 
+  // This makes sure some UI only shows up after the page is interactive.
   useEffect(() => setHydrated(true), []);
 
   const isUserProfilePage = (pathname) => {
     const pathSegments = pathname.split("/").filter((segment) => segment.length > 0);
-
     if (pathSegments.length === 1) {
       const segment = pathSegments[0];
       const knownRoutes = [
-        "login",
-        "signup",
-        "onboarding",
-        "theme",
-        "dashboard",
-        "profile",
-        "settings",
-        "about",
-        "contact",
-        "work",
-        "blog",
-        "api",
-        "404",
-        "500",
-        "auth",
+        "login", "signup", "onboarding", "theme", "dashboard", "profile",
+        "settings", "about", "contact", "work", "blog", "api", "404", "500", "auth",
       ];
       return !knownRoutes.includes(segment.toLowerCase());
     }
     return false;
   };
 
+  // Hide navbar on certain routes or user profile pages
   const hiddenPaths = ["/login", "/signup", "/onboarding", "/theme"];
   const shouldHide = hiddenPaths.includes(pathname) || isUserProfilePage(pathname);
 
+  // Load profile info if authorized
   useEffect(() => {
     let mounted = true;
 
@@ -64,12 +54,10 @@ export default function NavBar({ hideContainer }) {
         setProfileLoading(false);
         return;
       }
-
       try {
         setProfileLoading(true);
         const data = await fetchProfile();
         if (!mounted) return;
-
         if (data?.hasProfile) {
           setProfile(data.profile);
           setIsPublished(Boolean(data.profile?.isPublished));
@@ -77,8 +65,7 @@ export default function NavBar({ hideContainer }) {
           setProfile(null);
           setIsPublished(false);
         }
-      } catch (error) {
-        console.error("Failed to load profile:", error);
+      } catch {
         if (mounted) {
           setProfile(null);
           setIsPublished(false);
@@ -89,15 +76,16 @@ export default function NavBar({ hideContainer }) {
     };
 
     loadProfile();
-    return () => {
-      mounted = false;
-    };
+    return () => { mounted = false; };
   }, [isAuthorized, authLoading]);
 
+  // Toggle publish state
   const handlePublishToggle = (newPublishState) => setIsPublished(newPublishState);
+
+  // Toggle profile menu
   const handleProfileToggle = () => setOpenProfile((prev) => !prev);
 
-  // Only reveal controls after hydration + auth (+ profile if authorized) are ready
+  // Only show controls after hydration and loading is done
   const readyToShowControls = useMemo(
     () => hydrated && !authLoading && (!isAuthorized || (isAuthorized && !profileLoading)),
     [hydrated, authLoading, isAuthorized, profileLoading]
@@ -111,6 +99,7 @@ export default function NavBar({ hideContainer }) {
       style={{ minHeight: NAV_HEIGHT }}
     >
       <div className="flex flex-row items-center justify-between" style={{ height: NAV_HEIGHT }}>
+        {/* Logo */}
         <div className="w-1/4 mx-2 pl-4 flex items-center">
           <Link href="/" aria-label="Home">
             <Image
@@ -125,7 +114,6 @@ export default function NavBar({ hideContainer }) {
         </div>
 
         {!readyToShowControls ? (
-          // Skeleton keeps height & prevents flashes
           <div className="pr-4">
             <div className="h-10 w-32 animate-pulse bg-gray-200 rounded" />
           </div>
@@ -153,10 +141,9 @@ export default function NavBar({ hideContainer }) {
                   initialPublishState={isPublished}
                   onPublishToggle={handlePublishToggle}
                 />
-                <CopyButton textToCopy={`Creatify.space/${profile.user.username}`} />
+                <CopyButton textToCopy={`localhost:3000/${profile.user.username}`} isPublished={isPublished} />
               </div>
             </div>
-
             <button
               onClick={handleProfileToggle}
               aria-label="Open profile menu"

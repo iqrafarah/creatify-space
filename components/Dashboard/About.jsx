@@ -1,4 +1,3 @@
-// components/Dashboard/About.jsx
 import React, { useEffect, useState, useCallback } from "react";
 import { fetchProfile, updateProfile } from "@/lib/profileService";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -8,12 +7,15 @@ import { ActionButtons } from "@/components/Forms/ActionButtons";
 import { NotificationList } from "@/components/Notifications/NotificationList";
 import LoadingForm from "@/components/Forms/LoadingForm";
 
+// Handles about section data management and updates
 export default function About({ aboutDataChange, profile }) {
+  // State management
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [hasLoaded, setHasLoaded] = useState(false);
   const { notifications, addNotification } = useNotifications();
 
+  // Form state handling
   const {
     formData,
     isChanged,
@@ -25,35 +27,21 @@ export default function About({ aboutDataChange, profile }) {
     summary: "",
   });
 
-  // Memoize aboutDataChange to prevent unnecessary re-renders
   const stableAboutDataChange = useCallback(aboutDataChange, []);
 
-  // Load summary data - ONLY ONCE
+  // Load initial data
   useEffect(() => {
-    if (hasLoaded) return; // Prevent multiple loads
+    if (hasLoaded) return;
 
     const loadSummary = async () => {
       try {
-        let summaryData;
-        
-        if (profile) {
-          summaryData = {
-            summary: profile.summary || "",
-          };
-        } else {
-          const response = await fetchProfile();
-          if (response?.hasProfile && response.profile) {
-            summaryData = {
-              summary: response.profile.summary || "",
-            };
-          } else {
-            summaryData = { summary: "" };
-          }
-        }
+        let summaryData = profile 
+          ? { summary: profile.summary || "" }
+          : await fetchAndFormatProfile();
 
         setFormData(summaryData);
         saveChanges(summaryData);
-        setHasLoaded(true); // Mark as loaded
+        setHasLoaded(true);
       } catch (error) {
         console.error("Error loading summary:", error);
         addNotification("Failed to load summary data");
@@ -65,25 +53,18 @@ export default function About({ aboutDataChange, profile }) {
     loadSummary();
   }, [profile, hasLoaded, setFormData, saveChanges, addNotification]);
 
-  // Send updates to parent - but only after loading is complete and not on every keystroke
+  // Update parent component
   useEffect(() => {
-    // Only notify parent when data is fully loaded, not during typing
     if (!isLoading && hasLoaded && stableAboutDataChange && !isChanged) {
-      stableAboutDataChange({
-        about: formData.summary
-      });
+      stableAboutDataChange({ about: formData.summary });
     }
   }, [isLoading, hasLoaded, stableAboutDataChange, isChanged]);
 
-  // Separate effect to handle parent updates when form is saved
   const notifyParentOfChanges = useCallback(() => {
-    if (stableAboutDataChange) {
-      stableAboutDataChange({
-        about: formData.summary
-      });
-    }
+    stableAboutDataChange?.({ about: formData.summary });
   }, [formData.summary, stableAboutDataChange]);
 
+  // Event handlers
   const handleInputChange = (e) => {
     updateField(e.target.name, e.target.value);
   };
@@ -92,32 +73,21 @@ export default function About({ aboutDataChange, profile }) {
     e.preventDefault();
     setIsSaving(true);
 
-    // First, get the current profile data to avoid overwriting other fields
     try {
       const currentProfile = await fetchProfile();
       const currentData = currentProfile?.hasProfile ? currentProfile.profile : {};
       
-      // Create a request that preserves existing data and updates the summary
-      const requestBody = {
-        name: currentData.name || "",
-        headline: currentData.headline || "",
-        shortDescription: currentData.shortDescription || "",
-        imageUrl: currentData.imageUrl || "",
+      const response = await updateProfile({
+        ...currentData,
         summary: formData.summary,
-      };
-      
-      const response = await updateProfile(requestBody);
+      });
 
       if (response?.success) {
-        const updatedData = { summary: formData.summary };
-        saveChanges(updatedData);
+        saveChanges({ summary: formData.summary });
         addNotification("About section saved successfully🎉");
-        // Notify parent after successful save
         notifyParentOfChanges();
       } else {
-        addNotification(
-          `Failed to save: ${response?.error || "Unknown error"}`
-        );
+        addNotification(`Failed to save: ${response?.error || "Unknown error"}`);
       }
     } catch (error) {
       console.error("Error during save:", error);
@@ -129,21 +99,11 @@ export default function About({ aboutDataChange, profile }) {
 
   const handleCancel = (e) => {
     e.preventDefault();
-    
-    // Get the original saved data
     const originalData = resetChanges();
-    
-    // Update parent with the reset data
-    if (stableAboutDataChange) {
-      stableAboutDataChange({
-        about: originalData.summary
-      });
-    }
+    stableAboutDataChange?.({ about: originalData.summary });
   };
 
-  if (isLoading) {
-    return <LoadingForm />;
-  }
+  if (isLoading) return <LoadingForm />;
 
   return (
     <>
@@ -171,4 +131,12 @@ export default function About({ aboutDataChange, profile }) {
       <NotificationList notifications={notifications} />
     </>
   );
+}
+
+// Helper function to fetch and format profile data
+async function fetchAndFormatProfile() {
+  const response = await fetchProfile();
+  return response?.hasProfile && response.profile
+    ? { summary: response.profile.summary || "" }
+    : { summary: "" };
 }

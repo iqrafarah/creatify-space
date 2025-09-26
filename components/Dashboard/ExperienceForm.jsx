@@ -4,16 +4,18 @@ import { FormField } from "@/components/Forms/FormField";
 import { ActionButtons } from "@/components/Forms/ActionButtons";
 import LoadingForm from "@/components/Forms/LoadingForm";
 
+// Form for adding or editing a single experience entry
 export default function ExperienceForm({
   experience,
   onSave,
   onCancel,
   onDelete,
 }) {
+  // Local form state
   const [formData, setFormData] = useState({
     company: experience?.company || "",
     title: experience?.title || "",
-    period: experience?.duration || "", // Keep as period in form for UX
+    period: experience?.duration || "", 
     logo: experience?.logo || "",
   });
   const [logoFile, setLogoFile] = useState(null);
@@ -21,12 +23,12 @@ export default function ExperienceForm({
   const isNewExperience = !experience?.id;
   const [isLoading, setIsLoading] = useState(true);
 
-  // Set loading state to false after component mounts
+  // Set loading state to false after mount
   useEffect(() => {
     setIsLoading(false);
   }, []);
 
-  // Handle logo file upload
+  // Convert uploaded logo file to base64 and update form
   useEffect(() => {
     if (logoFile) {
       const reader = new FileReader();
@@ -37,11 +39,13 @@ export default function ExperienceForm({
     }
   }, [logoFile]);
 
+  // Handle text input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Handle logo file selection
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -49,18 +53,18 @@ export default function ExperienceForm({
     }
   };
 
+  // Save experience (calls parent handler)
   const handleSave = async () => {
     if (!formData.company.trim() || !formData.period.trim()) {
-      return; // Don't save if required fields are empty
+      return; // Required fields
     }
-
     setIsSaving(true);
     try {
       const experienceData = {
         ...experience,
         company: formData.company,
         title: formData.title,
-        duration: formData.period, // Map period to duration for API
+        duration: formData.period, // API expects duration
         logo: formData.logo,
       };
       await onSave(experienceData);
@@ -69,13 +73,11 @@ export default function ExperienceForm({
     }
   };
 
+  // Delete experience (calls parent handler)
   const handleDelete = () => {
-    console.log("Experience object on delete:", experience);
     const expId = experience.id;
     if (expId) {
       onDelete(expId);
-    } else {
-      console.error("No ID found for deletion.");
     }
   };
 
@@ -138,8 +140,7 @@ export default function ExperienceForm({
   );
 }
 
-
-// Logo upload component
+// Logo upload and preview component
 const LogoUpload = ({ logo, onLogoChange }) => (
   <label className="inline-flex items-center p-1 justify-center rounded-md text-sm border border-[var(--input)] cursor-pointer bg-gray-50 text-gray-600 hover:bg-gray-100 transition-colors">
     <input

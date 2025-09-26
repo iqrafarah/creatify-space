@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function Sidebar() {
   return (
-    <div className="flex flex-col justify-between h-fit sm:h-screen lg:w-1/4 p-4 mx-2">
+    <div className="flex flex-col justify-between h-fit sm:h-screen lg:w-1/4 pl-4 pr-2 mx-2">
       <div>
         <div className="w-full flex flex-col gap-2">
           <Link href="/dashboard">

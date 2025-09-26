@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/db";
 import { verifySessionCookie } from "@/lib/session";
 
+// Get user profile data
 export async function GET() {
   try {
     const userId = await verifySessionCookie();
@@ -13,6 +14,7 @@ export async function GET() {
       );
     }
 
+    // Fetch profile and basic user info
     const profile = await prisma.profile.findUnique({
       where: { userId }
     });
@@ -48,6 +50,7 @@ export async function GET() {
   }
 }
 
+// Update user profile data
 export async function PUT(request) {
   try {
     const userId = await verifySessionCookie();
@@ -61,9 +64,17 @@ export async function PUT(request) {
 
     const body = await request.json();
 
-    // Only allow updating certain fields
-    const { name, headline, shortDescription, imageUrl, summary } = body;
+    // Extract allowed fields for update
+    const { 
+      name, 
+      headline, 
+      shortDescription, 
+      imageUrl, 
+      summary, 
+      available 
+    } = body;
 
+    // Update profile with new data
     const updatedProfile = await prisma.profile.update({
       where: { userId },
       data: {
@@ -72,6 +83,7 @@ export async function PUT(request) {
         shortDescription,
         imageUrl,
         summary,
+        available: available ?? false,
         updatedAt: new Date(),
       },
     });

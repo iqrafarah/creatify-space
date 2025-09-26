@@ -4,17 +4,18 @@ import { cookies } from "next/headers";
 import crypto from "crypto";
 import { SendMagicLinkEmail } from "@/lib/email";
 
+// Handles login requests using magic links (passwordless login)
 export async function POST(req) {
   try {
     const body = await req.json();
     let { email } = body || {};
 
-    // normalize
+    // Clean up email input
     email = String(email || "")
       .trim()
       .toLowerCase();
 
-    // validate
+    // Check if email is valid
     if (!validateEmail(email)) {
       return new Response(JSON.stringify({ error: "Invalid email" }), {
         status: 400,
@@ -22,7 +23,7 @@ export async function POST(req) {
       });
     }
 
-    // find by email
+    // Check if user exists in database
     let user = await prisma.user.findUnique({ where: { email } });
 
     if (!user) {
@@ -37,13 +38,13 @@ export async function POST(req) {
       );
     }
 
-    // Generate secure token
+    // Create a secure random token for magic link
     const token = crypto.randomBytes(32).toString("hex");
     
-    // Set expiration (15 minutes from now)
+    // Token expires in 15 minutes
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
     
-    // Save token to database with user ID
+    // Save the token in database linked to user
     try {
       const createdToken = await prisma.verificationToken.create({
         data: {
@@ -61,13 +62,14 @@ export async function POST(req) {
       });
     }
 
-    // Build magic link
+    // Create magic link URL
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
     const magicLink = `${baseUrl}/api/auth/verify?token=${token}`;
     
-    // Send magic link email
+    // Send login email with magic link
     await SendMagicLinkEmail(email, magicLink);
 
+    // Return success response
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
