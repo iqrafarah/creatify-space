@@ -6,8 +6,8 @@ Creatify Space is a web-based platform that allows users to generate a professio
 
 This project aims to lower the barrier for professionals, students, and freelancers to build a portfolio without design or coding skills. It combines automation with customization, allowing each user to personalize the look and feel of their portfolio via an intuitive dashboard.
 
----
 
+![alt text](image-1.png)
 ## Key Features
 
 - **Magic Link Login**  
