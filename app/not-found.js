@@ -32,15 +32,15 @@ export default function NotFound() {
               </div>
             </div>
 
-            <div className="flex gap-3">
-              <Link href="/signup" className="flex-1">
-                <button className="w-full bg-white text-black font-medium px-6 py-3 rounded-lg hover:bg-[#f5f5f5] transition-colors duration-200">
+            <div className="flex gap-4 justify-center">
+              <Link href="/signup">
+                <button className="cursor-pointer w-fit bg-white text-black font-medium px-6 py-3 rounded-full hover:bg-[#f5f5f5] transition-colors duration-200">
                   Claim username
                 </button>
               </Link>
               
-              <Link href="/" className="flex-1">
-                <button className="w-full bg-transparent text-[#d1d5db] font-medium px-6 py-3 rounded-lg border border-[#374151] hover:border-[#4b5563] transition-colors duration-200">
+              <Link href="/">
+                <button className="cursor-pointer w-fit  bg-transparent text-[#d1d5db] font-medium px-6 py-3 rounded-full border border-[#374151] hover:border-[#4b5563] transition-colors duration-200">
                   Go home
                 </button>
               </Link>
@@ -59,13 +59,13 @@ export default function NotFound() {
 
             <div className="space-y-3">
               <Link href="/">
-                <button className="w-full bg-white text-black font-medium px-6 py-3 rounded-lg hover:bg-[#f5f5f5] transition-colors duration-200">
+                <button className="cursor-pointer w-fit bg-white text-black font-medium px-6 py-3 rounded-full hover:bg-[#f5f5f5] transition-colors duration-200">
                   Go home
                 </button>
               </Link>
               
               <Link href="/signup">
-                <button className="w-full bg-transparent text-[#d1d5db] font-medium px-6 py-3 rounded-lg border border-[#374151] hover:border-[#4b5563] transition-colors duration-200">
+                <button className="cursor-pointer w-fit bg-transparent text-[#d1d5db] font-medium px-6 py-3 rounded-full border border-[#374151] hover:border-[#4b5563] transition-colors duration-200">
                   Create portfolio
                 </button>
               </Link>

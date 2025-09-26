@@ -84,7 +84,7 @@ export default function About({ aboutDataChange, profile }) {
 
       if (response?.success) {
         saveChanges({ summary: formData.summary });
-        addNotification("About section saved successfully🎉");
+        addNotification("About changes saved🎉");
         notifyParentOfChanges();
       } else {
         addNotification(`Failed to save: ${response?.error || "Unknown error"}`);

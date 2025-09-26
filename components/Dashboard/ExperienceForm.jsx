@@ -88,7 +88,7 @@ export default function ExperienceForm({
   }
 
   return (
-    <div className="rounded-lg border bg-card text-card-foreground p-4 shadow-sm w-full">
+    <div className="rounded-lg border border-[var(--input)]  bg-card text-card-foreground p-4 shadow-sm w-full">
       <div className="flex flex-col gap-4">
         <FormField
           label="Company"

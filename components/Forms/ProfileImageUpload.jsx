@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Image from "next/image";
 
 const UploadIcon = () => (
@@ -18,12 +18,19 @@ const UploadIcon = () => (
   </svg>
 );
 
-export const ProfileImageUpload = ({ 
-  profileImage, 
-  onImageChange, 
+export const ProfileImageUpload = ({
+  profileImage,
+  onImageChange,
   size = 100,
-  className = "" 
+  className = ""
 }) => {
+  const inputRef = useRef(null);
+
+  // Open file dialog when container is clicked
+  const handleContainerClick = () => {
+    if (inputRef.current) inputRef.current.click();
+  };
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -36,23 +43,29 @@ export const ProfileImageUpload = ({
   };
 
   const handleImageError = (e) => {
-    e.target.src = "/placeholder-profile.png";
+    e.target.src = "/logo.svg";
   };
 
   return (
-    <div 
+    <div
       className={`relative rounded-full bg-gray-100 flex items-center justify-center cursor-pointer ${className}`}
       style={{ width: size, height: size }}
+      onClick={handleContainerClick}
+      tabIndex={0}
+      role="button"
+      aria-label="Upload profile image"
+      onKeyPress={e => { if (e.key === 'Enter' || e.key === ' ') handleContainerClick(); }}
     >
       <input
+        ref={inputRef}
         id="profile-image-upload"
-        className="absolute inset-0 opacity-0 cursor-pointer z-10"
+        className="hidden"
         accept="image/*"
         type="file"
         onChange={handleImageChange}
-        aria-label="Upload profile image"
+        tabIndex={-1}
       />
-      
+
       <div className="absolute inset-0 border-dotted border-[var(--input)] rounded-full overflow-hidden">
         {profileImage && (
           <>
@@ -67,7 +80,7 @@ export const ProfileImageUpload = ({
           </>
         )}
       </div>
-      
+
       <UploadIcon />
     </div>
   );

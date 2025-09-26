@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Creatify Space
 
-## Getting Started
+## Description
 
-First, run the development server:
+Creatify Space is a web-based platform that allows users to generate a professional online portfolio using their existing LinkedIn data. With just a PDF upload or pasted text, users can publish a personal portfolio hosted at a unique URL (e.g. `localhost:3000/username`). 
+
+This project aims to lower the barrier for professionals, students, and freelancers to build a portfolio without design or coding skills. It combines automation with customization, allowing each user to personalize the look and feel of their portfolio via an intuitive dashboard.
+
+---
+
+## Key Features
+
+- **Magic Link Login**  
+  Simple, secure authentication with email only.
+
+- **LinkedIn Import**  
+  Upload a PDF or paste your LinkedIn content to auto-generate your profile.
+
+- **Editable Dashboard**  
+  Customize your profile, skills, experience, and appearance in real-time.
+
+- **Responsive Design**  
+  Optimized for mobile, tablet, and desktop.
+
+- **One-Click Publishing**  
+  Instantly deploy your portfolio to a live, shareable link.
+
+- **Clean UI & Notifications**  
+  Simple design with real-time toast feedback for actions.
+
+---
+
+## Target Audience
+
+- Students and graduates
+- Job seekers and career switchers
+- Freelancers and solopreneurs
+- Creatives or developers with no time to design
+
+---
+
+## Tech Stack
+
+| Layer         | Stack                             |
+|---------------|-----------------------------------|
+| Frontend      | Next.js (App Router), Tailwind CSS |
+| Backend       | Next.js API Routes                |
+| Auth          | Magic link with email             |
+| Database      | PostgreSQL + Prisma ORM           |
+| PDF Parsing   | `pdf-parse` npm package           |
+
+
+---
+
+## Setup Instructions
+
+### Prerequisites
+- Node.js
+- PostgreSQL
+- Vercel account (optional for deployment)
+
+### Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+git clone https://github.com/iqrafarah/creatify-space.git
+cd creatify-space
+npm install

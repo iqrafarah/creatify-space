@@ -121,7 +121,7 @@ export default function Footer({ footerDataChange, initialData }) {
 
       if (response?.success) {
         saveChanges(formData);
-        addNotification("Footer updated successfully 🎉");
+        addNotification("Footer changes saved🎉");
         notifyParentOfChanges();
       } else {
         addNotification(

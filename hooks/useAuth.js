@@ -1,18 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 // Custom hook to check if the user is authenticated
 export default function useAuth() {
   const [user, setUser] = useState(null);
-  const [isAuthorized, setIsAuthorized] = useState(false);x
+  const [isAuthorized, setIsAuthorized] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
+
+  // Helper: check if current path is a public portfolio page
+  const isPortfolioPage = /^\/[^\/]+$/.test(pathname) && pathname !== '/login';
 
   useEffect(() => {
     let isMounted = true;
-    
+
     // Check if the user has a valid session
     async function checkAuth() {
       try {
@@ -23,40 +27,42 @@ export default function useAuth() {
             'Pragma': 'no-cache'
           }
         });
-        
-        // If not logged in, redirect to login page
+
+        // If not logged in, redirect to login page (unless on public portfolio)
         if (!response.ok) {
           if (isMounted) {
             setIsLoading(false);
-            setTimeout(() => router.push('/login'), 100);
+            if (!isPortfolioPage) {
+              setTimeout(() => router.push('/login'), 100);
+            }
           }
           return;
         }
-        
-        // If logged in, save user data and set authorized
+
         const userData = await response.json();
-        
+
         if (isMounted) {
           setUser(userData);
           setIsAuthorized(true);
           setIsLoading(false);
         }
       } catch (error) {
-        // On error, redirect to login
         console.error('Auth check failed:', error);
         if (isMounted) {
           setIsLoading(false);
-          setTimeout(() => router.push('/login'), 100);
+          if (!isPortfolioPage) {
+            setTimeout(() => router.push('/login'), 100);
+          }
         }
       }
     }
-    
+
     checkAuth();
-    
+
     return () => {
       isMounted = false;
     };
-  }, [router]);
+  }, [router, pathname, isPortfolioPage]);
 
   const handleLogout = async () => {
     try {

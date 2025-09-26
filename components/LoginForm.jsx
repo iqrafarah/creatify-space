@@ -87,7 +87,7 @@ export default function LoginForm() {
               <div className="loadingSpinner"></div>
             </>
           ) : (
-            "Send Magic Link"
+            "Send Email Link"
           )}
         </button>
 

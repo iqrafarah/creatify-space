@@ -209,7 +209,7 @@ export default function Skills({ skillsDataChange, skills }) {
       saveChanges({ skills: text });
       setFormData({ skills: text });
 
-      addNotification("Skills saved successfully 🎉");
+      addNotification("Skills changes saved 🎉");
       notifyParentOfChanges();
     } catch (error) {
       console.error("Error during save:", error);

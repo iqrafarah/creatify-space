@@ -136,7 +136,7 @@ export default function Hero({ heroDataChange, profile }) {
       if (response?.success) {
         const updatedData = { ...formData, image: profileImage };
         saveChanges(updatedData);
-        addNotification("Hero updated successfully🎉");
+        addNotification("Profile changes saved🎉");
       } else {
         addNotification(
           `Failed to save: ${response?.error || "Unknown error"}`

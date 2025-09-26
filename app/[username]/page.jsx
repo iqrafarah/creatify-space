@@ -77,7 +77,7 @@ export default function UserProfilePage({ params }) {
           <nav className="flex items-center justify-between flex-wrap mobile-menu">
             {userData.profile.imageUrl && (
               <Link href={"/"}>
-                <div className="cursor-pointer flex items-center gap-4 cursor-default">
+                <div className="cursor-pointer flex items-center gap-4 cursor-default w-md">
                   <Image
                     src={userData.profile?.imageUrl}
                     width={500}
@@ -85,6 +85,7 @@ export default function UserProfilePage({ params }) {
                     alt="logo"
                     layout="responsive"
                     objectFit="cover"
+                    quality={90}
                     className="object-cover rounded-full border border-grey max-w-[60px] max-h-[60px] w-full h-full"
                   />
                   <p className="text-lg font-medium">
@@ -100,22 +101,22 @@ export default function UserProfilePage({ params }) {
               } md:flex`}
             >
               <li>
-                <Link href="/work" className="hover:text-white">
-                  Projects
+                <Link href="#about" className="hover:text-white">
+                  About Me
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="hover:text-white">
-                  Journal
+                <Link href="#experience" className="hover:text-white">
+                  Experience
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="hover:text-white">
-                  About
+                <Link href="#skills" className="hover:text-white">
+                  Skills
                 </Link>
               </li>
               <li>
-                <Link href="/#contact" className="hover:text-white">
+                <Link href="#contact" className="hover:text-white">
                   Contact
                 </Link>
               </li>
@@ -182,13 +183,13 @@ export default function UserProfilePage({ params }) {
           >
             <div>
               <h2
-                className="text-3xl font-semibold mb-8"
+                className="text-xl sm:text-2xl font-semibold"
                 style={{ color: colors.headingColor }}
               >
                 About Me
               </h2>
 
-              <div className="prose prose-lg max-w-none">
+              <div className="prose prose-lg max-w-none mt-5">
                 <p className="text-base leading-relaxed whitespace-pre-line">
                   {userData.profile.summary}
                 </p>
@@ -201,8 +202,10 @@ export default function UserProfilePage({ params }) {
                   src={userData.profile?.imageUrl}
                   width={300}
                   height={300}
-                  alt="logo"
-                  className="max-w-full max-h-[450px] w-full h-screen rounded-md border border-[var(--grey)] object-cover"
+                  alt="Profile image"
+                  className="max-w-full max-h-[450px] w-full rounded-2xl border border-[var(--grey)] object-cover"
+                  quality={90}
+                  sizes="(max-width: 600px) 100vw, 300px"
                 />
               </div>
             )}
@@ -217,17 +220,17 @@ export default function UserProfilePage({ params }) {
             className="flex flex-col gap-6 items-start justify-center h-full mb-5 pb-14"
           >
             <h2
-              className="text-xl sm:text-2xl font-semibold"
+              className="text-xl sm:text-2xl font-semibold mb-5"
               style={{ color: colors.headingColor }}
             >
               Experience
             </h2>
 
-            <div className="grid sm:grid-cols-2 gap-x-2 gap-y-3 w-full">
+            <div className="grid sm:grid-cols-2 gap-4 w-full">
               {userData.experiences.map((experience) => (
                 <div
                   key={experience.id}
-                  className="flex flex-row w-full gap-x-4 mt-5"
+                  className="flex flex-row w-full gap-x-4"
                 >
                   <div className="bg-[var(--button)] border border-[var(--grey)] p-2 py-4 rounded-md flex flex-row items-center gap-4 w-full">
                     {experience.logo && (
@@ -247,7 +250,7 @@ export default function UserProfilePage({ params }) {
                         {experience.company}
                       </p>
                       <p className="text-sm tracking-tight line-clamp-1 text-start transition-all leading-normal">
-                        {experience.title} - {experience.duration}
+                        {experience.title} • {experience.duration}
                       </p>
                     </div>
                   </div>
@@ -272,7 +275,7 @@ export default function UserProfilePage({ params }) {
                 {userData.skills.map((skill) => (
                   <span
                     key={skill.id}
-                    className="flex items-center justify-center bg-[var(--button)] border border-[var(--grey)] px-8 h-10 min-w-[80px] rounded-md w-fit text-sm font-medium"
+                    className="flex items-center justify-center bg-[var(--button)] border border-[var(--grey)] px-8 h-10 min-w-[80px] rounded-full cursor-default w-fit text-sm font-medium"
                     style={{
                       backgroundColor: colors.borderColor,
                       color: colors.textColor,
@@ -297,8 +300,8 @@ export default function UserProfilePage({ params }) {
               width={50}
               height={50}
               alt="logo"
-              className="rounded-full"
-              style={{ border: `2px solidf ${colors.borderColor}` }}
+              className="w-16 h-16 rounded-full object-cover"
+              style={{ border: `2px solid ${colors.borderColor}` }}
             />
             <h3 className="text-white text-3xl md:text-4xl font-medium tracking-tight">
               {userData.Footer.title}

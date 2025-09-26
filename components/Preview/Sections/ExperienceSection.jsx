@@ -20,7 +20,7 @@ const ExperienceItem = ({ experience }) => (
             {experience.company}
           </p>
           <p className="text-sm tracking-tight line-clamp-1 text-start transition-all leading-normal">
-            {experience.title} - {experience.duration}
+            {experience.title} • {experience.duration}
           </p>
         </div>
       </div>

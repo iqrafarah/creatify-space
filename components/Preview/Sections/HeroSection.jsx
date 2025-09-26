@@ -35,7 +35,7 @@ export const HeroSection = ({
       <div className="flex gap-3">
         <Link href={`mailto:${hireMe}`}>
           <button className="bg-[var(--purple)] text-white font-medium h-4 py-4 text-[13px] px-4 rounded-full border border-[var(--purple)] inline-flex items-center justify-center hover:bg-[var(--foreground)] hover:text-[var(--background)] hover:border-white">
-            Hire me
+           Contact Me 
           </button>
         </Link>
       </div>

@@ -14,7 +14,7 @@ export const FormField = ({
   className = "",
   containerClassName = "mt-5 flex flex-col gap-2"
 }) => {
-  const baseInputClassName = "flex w-full rounded-md border border-[var(--input)] px-4";
+  const baseInputClassName = "flex w-full rounded-md border border-[var(--input)] px-4 focus:border-[var(--primary)] ";
   const inputClassName = multiline 
     ? `${baseInputClassName} py-2 ${className}` 
     : `${baseInputClassName} h-10 text-black ${className}`;
